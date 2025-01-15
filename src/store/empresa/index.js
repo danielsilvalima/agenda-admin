@@ -24,10 +24,13 @@ export default {
         const credencialObj = JSON.parse(credencial);
         commit("setUsuario", credencialObj);
         const response = await DataService.getEmpresa(credencialObj.email);
-        if (response.data && Object.keys(response.data).length > 0) {
-          commit("setEmpresa", response.data);
-        }else{
-          commit("setEmpresa", null);
+
+        if (response.status === 200 || response.status === 204) {
+          if (response.data && Object.keys(response.data).length > 0) {
+            commit("setEmpresa", response.data);
+          }else{
+            commit("setEmpresa", null);
+          }
         }
       } catch (error) {
         console.error("Erro ao fazer login", error);

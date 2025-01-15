@@ -44,7 +44,7 @@
             </div>
 
             <div v-else>
-              <p>Bem-vindo à sua dashboard! Aqui você pode acessar suas funcionalidades.</p>
+              <p>{{ message }}</p>
             </div>
           </template>
 
@@ -69,6 +69,7 @@ export default {
     return {
       drawer: false,
       group: null,
+      message : ''
     };
   },
   created() {
@@ -79,6 +80,11 @@ export default {
         .then((empresa) => {
           if (!empresa || Object.keys(empresa).length === 0) {
             this.$store.commit("empresa/setEmpresa", null);
+          }
+          if(empresa.message){
+            this.message = empresa.message;
+          }else{
+            this.message = 'BEM-VINDO À SUA DASHBOARD! AQUI VOCÊ PODE ACESSAR SUAS FUNCIONALIDADES.';
           }
         })
         .catch((error) => {

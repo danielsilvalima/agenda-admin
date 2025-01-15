@@ -59,6 +59,14 @@
                 id="email" name="email"></v-text-field>
             </v-col>
 
+            <v-col cols="12" md="12" >
+                <v-text-field density="compact" readonly label="LINK PARA CLIENTE"
+                  maxLength="100" v-model="form.hash"
+                id="hash" name="hash"
+                append-inner-icon="mdi-content-copy"
+                @click:append-inner="copiarTexto"></v-text-field>
+            </v-col>
+
           </v-row>
 
           <!-- Expansível para o serviço -->
@@ -238,7 +246,8 @@
 
         </v-card-text>
 
-        <template v-slot:actions>
+
+        <template v-slot:actions >
           <v-btn block
             :loading="loading"
             color="primary"
@@ -248,6 +257,7 @@
             SALVAR
           </v-btn>
         </template>
+
 
     </v-card>
     </SideMenu>
@@ -277,6 +287,7 @@ export default {
         nome_completo: "",
         celular: "",
         email: "",
+        hash: "",
         listaExpedientes: [],
         listaServicos: [],
       },
@@ -341,6 +352,12 @@ export default {
     criarEmpresa() {
       if(this.form.celular === '' || String(this.formataCelular(this.form.celular)).length < 11){
         this.alertTitle = 'CELULAR INVÁLIDO';
+        this.snackbar = true;
+        return;
+      }
+
+      if(this.empresa.expiration){
+        this.alertTitle = this.empresa?.message;
         this.snackbar = true;
         return;
       }
@@ -422,6 +439,7 @@ export default {
 
             this.form.razao_social = empresa.razao_social;
             this.form.cnpj = empresa.cnpj;
+            this.form.hash = empresa?.hash;
             this.form.celular = empresa.agenda_user?.celular;
             this.form.listaExpedientes = empresa.agenda_empresa_expedientes.map((item) => ({
               horario_expediente_id:item.horario_expediente_id,
@@ -577,6 +595,24 @@ export default {
 
       // Se não contém vírgula, adiciona ",00" no final
       return `${input},00`;
+    },
+    copiarTexto() {
+      // Seleciona o texto do campo
+      const input = document.getElementById("hash");
+      if (input) {
+        input.select();
+        input.setSelectionRange(0, 99999); // Para compatibilidade com dispositivos móveis
+
+        // Copia para a área de transferência
+        navigator.clipboard.writeText(input.value).then(() => {
+          this.$emit("copiado"); // Emite um evento, se necessário
+          this.alertTitle = "LINK COPIADO PARA A ÁREA DE TRANSFERÊNCIA!";
+          this.snackbar = true;
+        }).catch(() => {
+          this.alertTitle = "ERRO AO COPIAR O LINK";
+          this.snackbar = true;
+        });
+      }
     }
   },
 };
