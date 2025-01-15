@@ -1,0 +1,126 @@
+<template>
+  <v-card>
+    <v-layout>
+      <v-app-bar
+        color="primary"
+        prominent rounded
+      >
+        <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+
+        <v-toolbar-title>
+          {{ empresa ? empresa.razao_social : "SUA EMPRESA" }}
+        </v-toolbar-title>
+        <v-spacer></v-spacer>
+
+      </v-app-bar>
+
+      <!-- Menu lateral -->
+      <v-navigation-drawer v-model="drawer" temporary app>
+        <v-list>
+          <v-list-item @click="navigateTo('/home')">Home</v-list-item>
+          <v-list-item @click="navigateTo('/empresa')">Empresa</v-list-item>
+        <v-list-item @click="navigateTo('/perfil')">Perfil</v-list-item>
+        </v-list>
+
+        <v-spacer></v-spacer>
+        <div class="text-center">
+          <v-btn variant="elevated" style="width: 80%;" color="primary"  @click="logout" >
+            SAIR
+          </v-btn>
+      </div>
+      </v-navigation-drawer>
+
+      <!-- Conteúdo principal -->
+      <v-main class="fill-height" >
+        <v-container class="d-flex align-center justify-center" style="min-height: 100vh;">
+          <template v-if="$route.path === '/home'">
+            <div v-if="empresa === null">
+              <v-card elevation="2" class="pa-4 text-center">
+                <p class="mb-4">Você ainda não possui uma empresa cadastrada.</p>
+                <v-btn variant="elevated" color="primary" @click="redirectToEmpresa">
+                  CADASTRAR EMPRESA
+                </v-btn>
+              </v-card>
+            </div>
+
+            <div v-else>
+              <p>Bem-vindo à sua dashboard! Aqui você pode acessar suas funcionalidades.</p>
+            </div>
+          </template>
+
+          <!-- Slot para renderizar o conteúdo de outras rotas -->
+          <template v-else>
+            <slot />
+          </template>
+        </v-container>
+      </v-main>
+    </v-layout>
+  </v-card>
+</template>
+
+<script>
+import {googleLogout} from 'vue3-google-login';
+import router from "@/router";
+import { mapActions, mapGetters } from "vuex";
+
+export default {
+  name: "SideMenu",
+  data() {
+    return {
+      drawer: false,
+      group: null,
+    };
+  },
+  created() {
+    const storedCredential = localStorage.getItem("googleUserCredential");
+    if (storedCredential) {
+      const decodedUser = JSON.parse(storedCredential);
+      this.$store.dispatch("empresa/buscarEmpresa", decodedUser.email)
+        .then((empresa) => {
+          if (!empresa || Object.keys(empresa).length === 0) {
+            this.$store.commit("empresa/setEmpresa", null);
+          }
+        })
+        .catch((error) => {
+          console.error("ERRO AO CARREGAR EMPRESA:", error);
+        });
+    } else {
+      // Se não houver credenciais, redirecione para login
+      this.$router.push("/");
+    }
+  },
+  computed: {
+    ...mapGetters("empresa",["getEmpresa"]),
+    empresa() {
+      return this.getEmpresa;
+    },
+    showMenu() {
+      return this.$route.path === "/home";
+    },
+  },
+  watch: {
+    group () {
+      this.drawer = false;
+    },
+    },
+  methods: {
+    ...mapActions("empresa",["saveEmpresa"]),
+    navigateTo(route) {
+      this.$router.push(route);
+    },
+    redirectToEmpresa() {
+      router.push("/empresa");
+    },
+    logout(){
+      googleLogout()
+      localStorage.removeItem("googleUserCredential");
+      this.$store.commit("empresa/setUsuario", null);
+      router.push("/");
+    },
+  },
+};
+</script>
+
+<style scoped>
+/* Personalize o estilo conforme necessário */
+</style>
