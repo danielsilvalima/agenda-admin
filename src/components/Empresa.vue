@@ -246,7 +246,6 @@
 
         </v-card-text>
 
-
         <template v-slot:actions >
           <v-btn block
             :loading="loading"
@@ -257,7 +256,6 @@
             SALVAR
           </v-btn>
         </template>
-
 
     </v-card>
     </SideMenu>
