@@ -69,92 +69,6 @@
 
           </v-row>
 
-          <!-- Expansível para o serviço -->
-          <v-expansion-panels>
-            <v-expansion-panel>
-              <v-expansion-panel-title>GERENCIAR SERVIÇOS</v-expansion-panel-title>
-              <v-expansion-panel-text>
-
-                <v-row dense>
-
-                  <v-col cols="12" md="12">
-                    <v-select
-                      density="compact"
-                      :items="servicosDisponiveis"
-                      label="SERVIÇOS"
-                      v-model="service.servico_id"
-                      item-value="id"
-                      item-title="descricao"
-                    ></v-select>
-                  </v-col>
-
-                  <v-col cols="6" md="6" >
-                    <v-text-field density="compact" :rules="[rules.required]" label="VALOR"
-                      maxLength="7" v-model="service.vlr"
-                      prefix="R$"
-                      type="decimal"
-                      @blur="service.vlr = formatarValorMonetario(service.vlr)"
-                      id="vlr" name="vlr">
-                    </v-text-field>
-                  </v-col>
-
-                  <v-col cols="6" md="6">
-                    <v-text-field
-                      density="compact"
-                      :rules="[rules.required]"
-                      label="DURAÇÃO (HH:MM)"
-                      v-maska="'##:##'"
-                      type="time"
-                      maxLength="5"
-                      v-model="service.duracao"
-                      @blur="service.duracao = formatarHorario(service.duracao)"
-                      id="duracao"
-                      name="duracao">
-                    </v-text-field>
-                  </v-col>
-
-                  <v-col cols="12" md="12">
-                    <v-btn block color="secondary" @click="adicionarServico">
-                      ADICIONAR SERVIÇO
-                    </v-btn>
-                  </v-col>
-                  </v-row>
-
-                  <!-- Lista de expedientes adicionados -->
-                  <v-list>
-                  <v-card
-                    v-for="(item, index) in form.listaServicos" :key="index"
-                    class="mb-4"
-                  >
-                    <v-list-item
-                      color="primary"
-                      rounded="xl"
-                      class="d-flex justify-space-between align-center"
-                    >
-                      <template v-slot:prepend>
-                        <v-btn
-                          icon="mdi-delete"
-                          variant="text" color="red"
-                          class="ml-auto "
-                          @click="removerServico(index)"
-                        ></v-btn>
-                        <strong>{{ getServicoDescricao(item.servico_id) }}</strong>
-                      </template>
-                      <template v-slot:append>
-                        <div class="d-flex justify-space-between horario-wrapper">
-                          <span class="font-weight-black text-body-2 mt-1 horario">R$ {{ parseFloat(item.vlr || 0).toFixed(2).replace('.', ',') }}</span>
-                          <span class="font-weight-black text-body-2 mt-1 horario">{{ formataHora(item.duracao) }}</span>
-                        </div>
-                      </template>
-
-                    </v-list-item>
-                  </v-card>
-                  </v-list>
-
-              </v-expansion-panel-text>
-            </v-expansion-panel>
-          </v-expansion-panels>
-
           <!-- Expansível para o expediente -->
           <v-expansion-panels>
             <v-expansion-panel>
@@ -244,6 +158,41 @@
             </v-expansion-panel>
           </v-expansion-panels>
 
+          <!-- Expansível para o serviço -->
+          <v-expansion-panels>
+            <v-expansion-panel>
+              <v-expansion-panel-title>GERENCIAR SERVIÇOS</v-expansion-panel-title>
+              <v-expansion-panel-text>
+
+                  <!-- Lista de expedientes adicionados -->
+                  <v-list>
+                  <v-card
+                    v-for="(item, index) in form.listaServicos" :key="index"
+                    class="mb-4"
+                  >
+                    <v-list-item
+                      color="primary"
+                      rounded="xl"
+                      class="d-flex justify-space-between align-center"
+                    >
+                      <template v-slot:prepend>
+                        <strong>{{ getServicoDescricao(item.servico_id) }}</strong>
+                      </template>
+                      <template v-slot:append>
+                        <div class="d-flex justify-space-between horario-wrapper">
+                          <span class="font-weight-black text-body-2 mt-1 horario">R$ {{ parseFloat(item.vlr || 0).toFixed(2).replace('.', ',') }}</span>
+                          <span class="font-weight-black text-body-2 mt-1 horario">{{ formataHora(item.duracao) }}</span>
+                        </div>
+                      </template>
+
+                    </v-list-item>
+                  </v-card>
+                  </v-list>
+
+              </v-expansion-panel-text>
+            </v-expansion-panel>
+          </v-expansion-panels>
+
         </v-card-text>
 
         <template v-slot:actions >
@@ -252,7 +201,7 @@
             color="primary"
             text="CADASTRAR"
             variant="elevated"
-            @click="criarEmpresa" >
+            @click="salvarEmpresa" >
             SALVAR
           </v-btn>
         </template>
@@ -346,15 +295,14 @@ export default {
     this.carregarServicos();
   },
   methods: {
-    ...mapActions("empresa",["saveEmpresa"]),
-    criarEmpresa() {
+    async salvarEmpresa() {
       if(this.form.celular === '' || String(this.formataCelular(this.form.celular)).length < 11){
         this.alertTitle = 'CELULAR INVÁLIDO';
         this.snackbar = true;
         return;
       }
 
-      if(this.empresa.expiration){
+      if(this.empresa?.expiration){
         this.alertTitle = this.empresa?.message;
         this.snackbar = true;
         return;
@@ -362,28 +310,28 @@ export default {
 
       this.form.celular = this.formataCelular(this.form.celular);
       this.loading = true;
-      DataService.create(JSON.stringify(this.form))
-      .then(response => {
-          if(response.data === null){
-            this.$store.commit("empresa/setEmpresa", null);
-          }else{
-            this.$store.commit("empresa/setEmpresa", response.data);
-          }
+      try{
+        const empresa = await this.$store.dispatch(
+          "empresa/salvarEmpresa", this.form
+        );
 
-          this.alertTitle = 'SALVO COM SUCESSO';
-          this.snackbar = true;
+        if(empresa === null){
+          this.$store.commit("empresa/setEmpresa", null);
+        }else{
+          this.$store.commit("empresa/setEmpresa", empresa);
+        }
 
-          router.push("/empresa");
-      })
-      .catch(error => {
-        console.log(error.response?.data || error);
-        this.alertTitle = error.response?.data || error;
+        this.alertTitle = 'SALVO COM SUCESSO';
         this.snackbar = true;
-        return;
-      })
-      .finally(() => {
+
+        router.push("/empresa");
+      } catch (error) {
+        console.error("ERRO AO CARREGAR SERVIÇOS: ", error);
+        this.alertTitle = "ERRO AO CARREGAR SERVIÇOS: " + error;
+        this.snackbar = true;
+      } finally {
         this.loading = false;
-      });
+      }
     },
     async carregarServicos() {
       try {

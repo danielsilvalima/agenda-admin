@@ -26,5 +26,16 @@ export default {
         throw error;
       }
     },
+    async salvarServico({ commit }, empresa) {
+      try {
+        const response = await DataService.createServico(empresa);
+        commit("setServico", response.data || null);
+        return response.data;
+      } catch (error) {
+        console.error(error.response?.data || error);
+        commit("setServico", null);
+        throw error;
+      }
+    },
   },
 };

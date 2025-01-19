@@ -17,9 +17,9 @@
       <!-- Menu lateral -->
       <v-navigation-drawer v-model="drawer" temporary app>
         <v-list>
-          <v-list-item @click="navigateTo('/home')">Home</v-list-item>
-          <v-list-item @click="navigateTo('/empresa')">Empresa</v-list-item>
-        <v-list-item @click="navigateTo('/perfil')">Perfil</v-list-item>
+          <v-list-item @click="navigateTo('/home')">HOME</v-list-item>
+          <v-list-item @click="navigateTo('/empresa')">EMPRESA</v-list-item>
+        <v-list-item @click="navigateTo('/servico')">SERVIÇO</v-list-item>
         </v-list>
 
         <v-spacer></v-spacer>
@@ -99,9 +99,6 @@ export default {
     ...mapGetters("empresa",["getEmpresa"]),
     empresa() {
       return this.getEmpresa;
-    },
-    showMenu() {
-      return this.$route.path === "/home";
     },
   },
   watch: {

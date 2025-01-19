@@ -94,7 +94,7 @@ export default {
     },
   },
   created() {
-    //this.$root.setLoadingState(true);
+    this.$root.setLoadingState(true);
     let credencial = localStorage.getItem("googleUserCredential");
 
     if (credencial) {

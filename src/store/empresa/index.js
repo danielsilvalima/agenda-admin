@@ -25,12 +25,10 @@ export default {
         commit("setUsuario", credencialObj);
         const response = await DataService.getEmpresa(credencialObj.email);
 
-        if (response.status === 200 || response.status === 204) {
-          if (response.data && Object.keys(response.data).length > 0) {
-            commit("setEmpresa", response.data);
-          }else{
-            commit("setEmpresa", null);
-          }
+        if (response.data && Object.keys(response.data).length > 0) {
+          commit("setEmpresa", response.data);
+        }else{
+          commit("setEmpresa", null);
         }
       } catch (error) {
         console.error("Erro ao fazer login", error);
@@ -40,6 +38,17 @@ export default {
     async buscarEmpresa({ commit }, email) {
       try {
         const response = await DataService.getEmpresa(email);
+        commit("setEmpresa", response.data || null);
+        return response.data;
+      } catch (error) {
+        console.error(error.response?.data || error);
+        commit("setEmpresa", null);
+        throw error;
+      }
+    },
+    async salvarEmpresa({ commit }, empresa) {
+      try {
+        const response = await DataService.create(empresa);
         commit("setEmpresa", response.data || null);
         return response.data;
       } catch (error) {
