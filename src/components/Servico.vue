@@ -165,7 +165,7 @@ export default {
         required: value => !!value || 'DEVE SER PREENCHIDO',
       },
       service:{
-        servico_id: null,
+        id: null,
         duracao: null,
         vlr: null,
       },
@@ -184,7 +184,7 @@ export default {
   created() {
     this.listaServicos = [];
     this.service = {
-      servico_id: null,
+      id: null,
       duracao: null,
       vlr: null,
     };
@@ -208,10 +208,10 @@ export default {
 
             console.log(empresa?.agenda_empresa_servicos);
             this.listaServicos = empresa.agenda_empresa_servicos.map((item) => ({
-              servico_id:item.servico_id,
+              id:item.id,
               duracao: item.duracao,
               vlr: item.vlr,
-              descricao: item.agenda_servicos.descricao
+              descricao: item.descricao
             }));
             console.log(this.listaServicos);
           }
@@ -230,13 +230,15 @@ export default {
         this.snackbar = true;
       } else {
         const duplicado = this.listaServicos.find(
-          (servico) => servico.agenda_servicos.descricao === this.service.descricao
+          (servico) => servico.descricao === this.service.descricao
         );
         if (duplicado) {
           this.alertTitle = "ESTE SERVIÇO JÁ FOI ADICIONADO";
           this.snackbar = true;
           return;
         }
+
+        this.service.vlr = parseFloat(this.service.vlr.replace(',', '.')).toFixed(2);
 
         this.listaServicos.push({ ...this.service });
         this.service = {

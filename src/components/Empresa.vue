@@ -176,7 +176,7 @@
                       class="d-flex justify-space-between align-center"
                     >
                       <template v-slot:prepend>
-                        <strong>{{ getServicoDescricao(item.servico_id) }}</strong>
+                        <strong>{{ getServicoDescricao(item.id) }}</strong>
                       </template>
                       <template v-slot:append>
                         <div class="d-flex justify-space-between horario-wrapper">
@@ -249,7 +249,7 @@ export default {
         intervalo_fim: null,
       },
       service:{
-        servico_id: null,
+        id: null,
         duracao: null,
         vlr: null,
       },
@@ -286,7 +286,7 @@ export default {
       intervalo_fim: null,
     };
     this.service = {
-      servico_id: null,
+      id: null,
       duracao: null,
       vlr: null,
     };
@@ -396,7 +396,7 @@ export default {
             }));
 
             this.form.listaServicos = empresa.agenda_empresa_servicos.map((item) => ({
-              servico_id:item.servico_id,
+              id:item.id,
               duracao: item.duracao,
               vlr: item.vlr,
             }));
@@ -423,7 +423,7 @@ export default {
     },
     atualizarServicosDisponiveis() {
       const servicosJaAdicionados = this.form.listaServicos.map(
-        (servico) => servico.servico_id
+        (servico) => servico.id
       );
       this.servicosDisponiveis = this.servicos.filter(
         (servico) => !servicosJaAdicionados.includes(servico.id)
@@ -453,13 +453,13 @@ export default {
     },
     adicionarServico() {
       if (
-        this.service.servico_id !== null &&
+        this.service.id !== null &&
         this.service.duracao &&
         this.service.vlr
       ) {
         this.form.listaServicos.push({ ...this.service });
         this.expediente = {
-          servico_id : null,
+          id : null,
           duracao : null,
           vlr: null
         };
@@ -483,9 +483,9 @@ export default {
       );
       return dia ? dia.descricao : "DIA NÃO ENCONTRADO";
     },
-    getServicoDescricao(servico_id) {
+    getServicoDescricao(id) {
       const descricao = this.servicos.find(
-        (item) => item.id === servico_id
+        (item) => item.id === id
       );
       return descricao ? descricao.descricao : "SERVIÇO NÃO ENCONTRADO";
     },
