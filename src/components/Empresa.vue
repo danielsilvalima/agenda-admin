@@ -262,6 +262,7 @@ export default {
   computed: {
     ...mapGetters("empresa", ["getEmpresa"]), // Mapeia o getter para obter os dados da empresa
     ...mapGetters("servico", ["getServico"]),
+    ...mapGetters("empresa", ["getToken"]),
     empresa() {
       return this.getEmpresa; // Retorna os dados da empresa do estado global
     },
@@ -270,6 +271,9 @@ export default {
     },
     servico() {
       return this.getServico;
+    },
+    token() {
+      return this.getToken;
     },
   },
   created() {
@@ -309,6 +313,7 @@ export default {
       }
 
       this.form.celular = this.formataCelular(this.form.celular);
+      this.form.token = this.token;
       this.loading = true;
       try{
         const empresa = await this.$store.dispatch(

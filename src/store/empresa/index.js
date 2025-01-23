@@ -6,9 +6,11 @@ export default {
   state: {
     usuario: null,
     empresa: null,
+    token: null,
   },
   getters: {
     getEmpresa: (state) => state.empresa,
+    getToken: (state) => state.token,
   },
   mutations: {
     setUsuario(state, usuario) {
@@ -16,6 +18,9 @@ export default {
     },
     setEmpresa(state, empresa) {
       state.empresa = empresa;
+    },
+    setToken(state, token) {
+      state.token = token;
     },
   },
   actions: {
