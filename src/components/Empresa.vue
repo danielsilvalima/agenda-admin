@@ -325,11 +325,15 @@ export default {
         }else{
           this.$store.commit("empresa/setEmpresa", empresa);
         }
-
         this.alertTitle = 'SALVO COM SUCESSO';
         this.snackbar = true;
 
-        router.push("/empresa");
+        setTimeout(() => {
+          this.$router.push("/empresa").then(() => {
+            window.location.reload();
+          });
+        }, 2000);
+
       } catch (error) {
         console.error("ERRO AO CARREGAR SERVIÇOS: ", error);
         this.alertTitle = "ERRO AO CARREGAR SERVIÇOS: " + error;
