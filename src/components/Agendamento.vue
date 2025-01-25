@@ -86,13 +86,13 @@
 
 <script>
 import { mapGetters } from "vuex";
-//import SideMenu from "@/components/SideMenu.vue";
+import SideMenu from "@/components/SideMenu.vue";
 import moment from "moment";
 import { VDateInput } from 'vuetify/labs/VDateInput';
 
 export default {
   components: {
-    SideMenu: () => import('@/components/SideMenu.vue'),
+    SideMenu,
     VDateInput
   },
   data() {

@@ -24,13 +24,13 @@
 
 <script>
 import { mapGetters } from "vuex";
-//import SideMenu from "@/components/SideMenu.vue";
+import SideMenu from "@/components/SideMenu.vue";
 import { messaging } from "../firebase";
 import { getToken } from "firebase/messaging";
 
 export default {
   components: {
-    SideMenu: () => import('@/components/SideMenu.vue'),
+    SideMenu,
   },
   data() {
     return {
