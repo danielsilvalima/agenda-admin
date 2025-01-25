@@ -19,55 +19,6 @@
     <SideMenu
     />
     </v-app>
-  <!--<v-card>
-    <v-layout>
-      <v-app-bar
-        color="primary"
-        prominent
-      >
-        <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-
-        <v-toolbar-title>
-          {{ empresa ? empresa.razao_social : "SUA EMPRESA" }}
-        </v-toolbar-title>
-        <v-spacer></v-spacer>
-
-      </v-app-bar>
-
-      <!-- Menu lateral -->
-   <!--   <v-navigation-drawer
-        v-model="drawer" temporary>
-        <v-list>
-        <v-list-item @click="navigateTo('/empresa')">Empresa</v-list-item>
-        <v-list-item @click="navigateTo('/perfil')">Perfil</v-list-item>
-        </v-list>
-
-        <div v-if="loggedIn">
-          <v-btn variant="elevated" color="primary"  @click="logout" >
-            SAIR
-          </v-btn>
-        </div>
-      </v-navigation-drawer>
-
-      <!-- Conteúdo principal -->
- <!--     <v-main class="fill-height">
-        <v-container class="d-flex align-center justify-center" style="min-height: 100vh;">
-          <div v-if="empresa === null">
-            <v-card elevation="2" class="pa-4 text-center">
-              <p class="mb-4">Você ainda não possui uma empresa cadastrada.</p>
-              <v-btn variant="elevated" color="primary"  @click="redirectToEmpresa" >
-                CADASTRAR EMPRESA
-              </v-btn>
-            </v-card>
-          </div>
-
-          <div v-else>
-            <p>Bem-vindo à sua dashboard! Aqui você pode acessar suas funcionalidades.</p>
-          </div>
-        </v-container>
-      </v-main>
-    </v-layout>
-  </v-card>-->
 
 </template>
 
