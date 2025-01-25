@@ -14,6 +14,11 @@ class DataService {
     return http_token.post(`/agenda/servico`, data);
   }
 
+  getAgendamentos(id, data) {
+    return http_token.get(`/agenda/empresa/agendamento`, {
+      params: { id, data },
+    });
+  }
 
 
   getServico() {

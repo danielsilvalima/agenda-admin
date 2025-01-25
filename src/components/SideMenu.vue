@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-layout>
+    <v-layout style="height: 100vh;">
       <v-app-bar
         color="primary"
         prominent rounded
@@ -18,6 +18,7 @@
       <v-navigation-drawer v-model="drawer" temporary app>
         <v-list>
           <v-list-item @click="navigateTo('/home')">HOME</v-list-item>
+          <v-list-item @click="navigateTo('/agendamento')">AGENDAMENTOS</v-list-item>
           <v-list-item @click="navigateTo('/empresa')">EMPRESA</v-list-item>
         <v-list-item @click="navigateTo('/servico')">SERVIÇO</v-list-item>
         </v-list>
@@ -31,11 +32,11 @@
       </v-navigation-drawer>
 
       <!-- Conteúdo principal -->
-      <v-main class="fill-height" >
-        <v-container class="d-flex align-center justify-center" style="min-height: 100vh;">
+      <v-main style="height: 100vh; display: flex; align-items: flex-start; justify-content: center;" >
+        <v-container >
           <template v-if="$route.path === '/home'">
-            <div v-if="empresa === null">
-              <v-card elevation="2" class="pa-4 text-center">
+            <div v-if="empresa === null" >
+              <v-card elevation="2" class="pa-4 text-center" >
                 <p class="mb-4">Você ainda não possui uma empresa cadastrada.</p>
                 <v-btn variant="elevated" color="primary" @click="redirectToEmpresa">
                   CADASTRAR EMPRESA

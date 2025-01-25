@@ -62,5 +62,15 @@ export default {
         throw error;
       }
     },
+    async buscarAgendamentos({ commit }, {id, data}) {
+      try {
+        const response = await DataService.getAgendamentos(id, data);
+
+        return response.data;
+      } catch (error) {
+        console.error(error.response?.data || error);
+        throw error;
+      }
+    },
   },
 };

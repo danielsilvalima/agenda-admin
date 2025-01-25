@@ -155,12 +155,6 @@ export default {
       alertTitle: "",
       timeout: 3000,
       listaServicos : [],
-      headers: [
-        { text: 'DESCRIÇÃO', value: 'descricao' },
-        { text: 'VALOR', value: 'vlr' },
-        { text: 'DURAÇÃO', value: 'duracao' },
-        { text: 'AÇÔES', value: 'acoes', sortable: false },
-      ],
       rules: {
         required: value => !!value || 'DEVE SER PREENCHIDO',
       },
