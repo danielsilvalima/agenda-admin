@@ -141,11 +141,11 @@
 
 <script>
 import { mapGetters } from "vuex";
-import SideMenu from "@/components/SideMenu.vue";
+//import SideMenu from "@/components/SideMenu.vue";
 
 export default {
   components: {
-    SideMenu,
+    SideMenu: () => import('@/components/SideMenu.vue'),
   },
   data() {
     return {

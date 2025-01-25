@@ -212,14 +212,12 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
-import SideMenu from "@/components/SideMenu.vue";
-import DataService from "../services/DataService";
-import router from "@/router";
+import { mapGetters } from "vuex";
+//import SideMenu from "@/components/SideMenu.vue";
 
 export default {
   components: {
-    SideMenu,
+    SideMenu: () => import('@/components/SideMenu.vue'),
   },
   data() {
     return {
