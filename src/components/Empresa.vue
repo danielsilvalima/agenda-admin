@@ -146,7 +146,7 @@ export default {
       rules: {
         required: value => !!value || 'DEVE SER PREENCHIDO',
       },
-      whatsappLink: "https://wa.me/5516988110775?text=Olá!%20Gostaria%20de%20alterar%20meu%20plano."
+      whatsappLink: "https://wa.me/5516982037314?text=Olá!%20Gostaria%20de%20alterar%20meu%20plano."
     };
   },
   computed: {

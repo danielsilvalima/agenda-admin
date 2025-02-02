@@ -44,7 +44,6 @@ export default {
       try {
         const response = await DataService.getEmpresa(email);
         commit("setEmpresa", response.data || null);
-        console.log(response.data);
         return response.data;
       } catch (error) {
         console.error(error.response?.data.message || error);
