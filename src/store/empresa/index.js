@@ -36,7 +36,7 @@ export default {
           commit("setEmpresa", null);
         }
       } catch (error) {
-        console.error("Erro ao fazer login", error);
+        console.error("Erro ao fazer login", error.message);
         throw error;
       }
     },
@@ -44,9 +44,10 @@ export default {
       try {
         const response = await DataService.getEmpresa(email);
         commit("setEmpresa", response.data || null);
+        console.log(response.data);
         return response.data;
       } catch (error) {
-        console.error(error.response?.data || error);
+        console.error(error.response?.data.message || error);
         commit("setEmpresa", null);
         throw error;
       }
@@ -57,7 +58,7 @@ export default {
         commit("setEmpresa", response.data || null);
         return response.data;
       } catch (error) {
-        console.error(error.response?.data || error);
+        console.error(error.response?.data.message || error);
         commit("setEmpresa", null);
         throw error;
       }
@@ -68,7 +69,7 @@ export default {
 
         return response.data;
       } catch (error) {
-        console.error(error.response?.data || error);
+        console.error(error.response?.data.message || error);
         throw error;
       }
     },

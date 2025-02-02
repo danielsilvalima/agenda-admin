@@ -1,62 +1,50 @@
 <template>
-  <v-card>
-    <v-layout >
-      <v-app-bar
-        color="primary"
-        prominent rounded
-      >
-        <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+  <v-row>
+    <v-col cols="12" offset-sm="12" sm="12">
+      <v-card >
+        <v-card-title class="bg-blue d-flex align-center text-white">
+          <span class="text-h5">{{ empresa ? empresa.razao_social : "SUA EMPRESA" }}</span>
 
-        <v-toolbar-title>
-          {{ empresa ? empresa.razao_social : "SUA EMPRESA" }}
-        </v-toolbar-title>
-        <v-spacer></v-spacer>
+          <v-spacer></v-spacer>
 
-      </v-app-bar>
+          <v-menu>
+            <template v-slot:activator="{ props }">
+              <v-btn icon="mdi-menu" variant="text" v-bind="props"></v-btn>
+            </template>
 
-      <!-- Menu lateral -->
-      <v-navigation-drawer v-model="drawer" temporary app>
-        <v-list>
-          <v-list-item @click="navigateTo('/home')">HOME</v-list-item>
-          <v-list-item @click="navigateTo('/agendamento')">AGENDAMENTOS</v-list-item>
-          <v-list-item @click="navigateTo('/empresa')">EMPRESA</v-list-item>
-        <v-list-item @click="navigateTo('/servico')">SERVIÇO</v-list-item>
-        </v-list>
+            <v-list>
+              <v-list-item v-for="(item, i) in menuItems" :key="i" @click="navigateTo(item.route)">
+                <v-list-item-title>{{ item.title }}</v-list-item-title>
+              </v-list-item>
 
-        <v-spacer></v-spacer>
-        <div class="text-center">
-          <v-btn variant="elevated" style="width: 80%;" color="primary"  @click="logout" >
-            SAIR
-          </v-btn>
-      </div>
-      </v-navigation-drawer>
+              <v-divider></v-divider>
 
-      <!-- Conteúdo principal -->
-      <v-main style="display: flex;  justify-content: center;" >
-        <v-container >
-          <template v-if="$route.path === '/home'">
-            <div v-if="empresa === null" >
-              <v-card elevation="2" class="pa-4 text-center" >
-                <p class="mb-4">Você ainda não possui uma empresa cadastrada.</p>
-                <v-btn variant="elevated" color="primary" @click="redirectToEmpresa">
-                  CADASTRAR EMPRESA
-                </v-btn>
-              </v-card>
-            </div>
+              <v-list-item>
+                <v-btn size="small" text variant="elevated" block color="primary" @click="logout">SAIR</v-btn>
+              </v-list-item>
+            </v-list>
+          </v-menu>
 
-            <div v-else style="display: flex;  justify-content: center; height: 100vh;">
-              <p>{{ message }}</p>
-            </div>
-          </template>
+        </v-card-title>
 
-          <!-- Slot para renderizar o conteúdo de outras rotas -->
-          <template v-else>
-            <slot />
-          </template>
-        </v-container>
-      </v-main>
-    </v-layout>
-  </v-card>
+        <template v-if="$route.path === '/home'">
+          <div v-if="empresa === null" class="d-flex justify-center align-center" style="height: 100vh;">
+            <v-card elevation="2" class="pa-4 text-center" >
+              <p class="mb-4 text-caption">Você ainda não possui uma empresa cadastrada.</p>
+              <v-btn size="small" variant="elevated" color="primary" @click="redirectToEmpresa" class="text-caption">
+                CADASTRAR EMPRESA
+              </v-btn>
+            </v-card>
+          </div>
+
+          <div v-else class="d-flex justify-center align-center" style="height: 100vh;">
+            <p class="text-caption">{{ message }}</p>
+          </div>
+        </template>
+
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -70,7 +58,15 @@ export default {
     return {
       drawer: false,
       group: null,
-      message : ''
+      message : '',
+      menuItems : [
+        { title: 'HOME', route: '/home' },
+        { title: 'AGENDAMENTOS', route: '/agendamento' },
+        { title: 'EMPRESA', route: '/empresa' },
+        { title: 'RECURSO', route: '/recurso' },
+        { title: 'EXPEDIENTE', route: '/expediente' },
+        { title: 'SERVIÇO', route: '/servico' }
+      ],
     };
   },
   created() {

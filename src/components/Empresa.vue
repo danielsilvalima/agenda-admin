@@ -6,7 +6,7 @@
   {{ alertTitle }}
 
     <template v-slot:actions>
-      <v-btn
+      <v-btn size="small"
         color="blue"
         variant="text"
         @click="snackbar = false"
@@ -15,14 +15,13 @@
       </v-btn>
     </template>
   </v-snackbar>
-  <v-app>
-    <SideMenu>
+    <SideMenu/>
       <v-card class="mx-auto my-6"
         elevation="16"
         max-width="450">
 
         <v-card-item>
-            <v-card-title class="text-center ">
+            <v-card-title class="text-center text-caption">
                 CADASTRO DE EMPRESA
             </v-card-title>
         </v-card-item>
@@ -67,136 +66,47 @@
                 @click:append-inner="copiarTexto"></v-text-field>
             </v-col>
 
+            <v-row>
+              <v-col cols="12" md="6">
+                <v-card :class="{ 'selected-plan': form.plano_recurso === '1' }">
+                  <v-card-title>BÁSICO</v-card-title>
+                  <v-card-text>1 RECURSO.</v-card-text>
+                </v-card>
+              </v-col>
+
+              <v-col cols="12" md="6">
+                <v-card :class="{ 'selected-plan': form.plano_recurso === '2' }">
+                  <v-card-title>PROFISSIONAL</v-card-title>
+                  <v-card-text>2 a 5 RECURSOS.</v-card-text>
+                </v-card>
+              </v-col>
+
+              <v-col cols="12" md="6">
+                <v-card :class="{ 'selected-plan': form.plano_recurso === '3' }">
+                  <v-card-title>PREMIUM</v-card-title>
+                  <v-card-text>6 a 15 RECURSOS.</v-card-text>
+                </v-card>
+              </v-col>
+
+              <v-col cols="12" md="6">
+                <v-card :class="{ 'selected-plan': form.plano_recurso === '4' }">
+                  <v-card-title>MASTER</v-card-title>
+                  <v-card-text>MAIS DE 15 RECURSOS.</v-card-text>
+                </v-card>
+              </v-col>
+            </v-row>
+
+            <!-- Mensagem de suporte -->
+            <v-alert type="info" class="mt-4">
+              PARA ALTERAR O PLANO, <a :href="whatsappLink" target="_blank" class="text-white">CLIQUE AQUI E FALE COM O SUPORTE VIA WHATSAPP.</a>
+            </v-alert>
+
           </v-row>
-
-          <!-- Expansível para o expediente -->
-          <v-expansion-panels>
-            <v-expansion-panel>
-              <v-expansion-panel-title>GERENCIAR EXPEDIENTE</v-expansion-panel-title>
-              <v-expansion-panel-text>
-                <v-row dense>
-
-                  <v-col cols="12" md="12">
-                    <v-select
-                      density="compact"
-                      :items="diasDisponiveis"
-                      label="DIA DA SEMANA"
-                      v-model="expediente.horario_expediente_id"
-                      item-value="id"
-                      item-title="descricao"
-                    ></v-select>
-                  </v-col>
-
-                  <v-col cols="6" md="6" >
-                    <v-text-field density="compact" :rules="[rules.required]" label="HORA ABERTURA" v-maska="'##:##'"
-                      maxLength="5" v-model="expediente.hora_abertura" type="time"
-                      @blur="expediente.hora_abertura = formatarHorario(expediente.hora_abertura)"
-                      id="hora_abertura" name="hora_abertura"></v-text-field>
-                  </v-col>
-
-                  <v-col cols="6" md="6" >
-                    <v-text-field density="compact" :rules="[rules.required]" label="HORA FECHAMENTO" v-maska="'##:##'"
-                      maxLength="5" v-model="expediente.hora_fechamento" type="time"
-                      @blur="expediente.hora_fechamento = formatarHorario(expediente.hora_fechamento)"
-                      id="hora_fechamento" name="hora_fechamento"></v-text-field>
-                  </v-col>
-
-                  <v-col cols="6" md="6" >
-                    <v-text-field density="compact" :rules="[rules.required]" label="INÍCIO INTERVALO" v-maska="'##:##'"
-                      maxLength="5" v-model="expediente.intervalo_inicio" type="time"
-                      @blur="expediente.intervalo_inicio = formatarHorario(expediente.intervalo_inicio)"
-                      id="intervalo_inicio" name="intervalo_inicio"></v-text-field>
-                  </v-col>
-
-                  <v-col cols="6" md="6" >
-                    <v-text-field density="compact" :rules="[rules.required]" label="TÉRMINO INTERVALO" v-maska="'##:##'"
-                      maxLength="5" v-model="expediente.intervalo_fim" type="time"
-                      @blur="expediente.intervalo_fim = formatarHorario(expediente.intervalo_fim)"
-                      id="intervalo_fim" name="intervalo_fim"></v-text-field>
-                  </v-col>
-
-                  <v-col cols="12" md="12">
-                    <v-btn block color="secondary" @click="adicionarExpediente">
-                      ADICIONAR EXPEDIENTE
-                    </v-btn>
-                  </v-col>
-                </v-row>
-
-                <!-- Lista de expedientes adicionados -->
-                <v-list>
-                  <v-card
-                    v-for="(item, index) in form.listaExpedientes" :key="index"
-                    class="mb-4"
-                  >
-                    <v-list-item
-                      color="primary"
-                      rounded="xl"
-                      class="d-flex justify-space-between align-center"
-                    >
-                      <template v-slot:prepend>
-                        <v-btn
-                          icon="mdi-delete"
-                          variant="text" color="red"
-                          class="ml-auto "
-                          @click="removerExpediente(index)"
-                        ></v-btn>
-                        <strong>{{ getDiaDescricao(item.horario_expediente_id) }}:</strong>
-                      </template>
-                      <template v-slot:append>
-                        <div class="d-flex justify-space-between horario-wrapper">
-                          <span class="font-weight-black text-body-2 mt-1 horario">{{ formataHora(item.hora_abertura) }}</span>
-                          <span class="font-weight-black text-body-2 mt-1 horario">{{ formataHora(item.intervalo_inicio) }}</span>
-                          <span class="font-weight-black text-body-2 mt-1 horario">{{ formataHora(item.intervalo_fim) }}</span>
-                          <span class="font-weight-black text-body-2 mt-1 horario">{{ formataHora(item.hora_fechamento) }}</span>
-                        </div>
-                      </template>
-
-                    </v-list-item>
-                  </v-card>
-                </v-list>
-              </v-expansion-panel-text>
-            </v-expansion-panel>
-          </v-expansion-panels>
-
-          <!-- Expansível para o serviço -->
-          <v-expansion-panels>
-            <v-expansion-panel>
-              <v-expansion-panel-title>GERENCIAR SERVIÇOS</v-expansion-panel-title>
-              <v-expansion-panel-text>
-
-                  <!-- Lista de expedientes adicionados -->
-                  <v-list>
-                  <v-card
-                    v-for="(item, index) in form.listaServicos" :key="index"
-                    class="mb-4"
-                  >
-                    <v-list-item
-                      color="primary"
-                      rounded="xl"
-                      class="d-flex justify-space-between align-center"
-                    >
-                      <template v-slot:prepend>
-                        <strong>{{ getServicoDescricao(item.id) }}</strong>
-                      </template>
-                      <template v-slot:append>
-                        <div class="d-flex justify-space-between horario-wrapper">
-                          <span class="font-weight-black text-body-2 mt-1 horario">R$ {{ parseFloat(item.vlr || 0).toFixed(2).replace('.', ',') }}</span>
-                          <span class="font-weight-black text-body-2 mt-1 horario">{{ formataHora(item.duracao) }}</span>
-                        </div>
-                      </template>
-
-                    </v-list-item>
-                  </v-card>
-                  </v-list>
-
-              </v-expansion-panel-text>
-            </v-expansion-panel>
-          </v-expansion-panels>
 
         </v-card-text>
 
         <template v-slot:actions >
-          <v-btn block
+          <v-btn size="small" block class="text-caption"
             :loading="loading"
             color="primary"
             text="CADASTRAR"
@@ -205,10 +115,8 @@
             SALVAR
           </v-btn>
         </template>
-
     </v-card>
-    </SideMenu>
-  </v-app>
+
 </template>
 
 <script>
@@ -233,68 +141,36 @@ export default {
         celular: "",
         email: "",
         hash: "",
-        listaExpedientes: [],
-        listaServicos: [],
+        plano_recurso: ""
       },
       rules: {
         required: value => !!value || 'DEVE SER PREENCHIDO',
       },
-      expediente: {
-        horario_expediente_id: null,
-        hora_abertura: null,
-        hora_fechamento: null,
-        intervalo_inicio: null,
-        intervalo_fim: null,
-      },
-      service:{
-        id: null,
-        duracao: null,
-        vlr: null,
-      },
-      diasDaSemana: [],
-      servicos: [],
-      diasDisponiveis: [],
-      servicosDisponiveis: [],
+      whatsappLink: "https://wa.me/5516988110775?text=Olá!%20Gostaria%20de%20alterar%20meu%20plano."
     };
   },
   computed: {
-    ...mapGetters("empresa", ["getEmpresa"]), // Mapeia o getter para obter os dados da empresa
-    ...mapGetters("servico", ["getServico"]),
+    ...mapGetters("empresa", ["getEmpresa"]),
     ...mapGetters("empresa", ["getToken"]),
     empresa() {
       return this.getEmpresa; // Retorna os dados da empresa do estado global
-    },
-    horario_expediente() {
-      return this.getHorarioExpediente;
-    },
-    servico() {
-      return this.getServico;
     },
     token() {
       return this.getToken;
     },
   },
   created() {
-    this.diasDaSemana = [];
-    this.servicos = [];
-    this.diasDisponiveis = [];
-    this.form.listaExpedientes = [];
-    this.form.listaServicos = [];
-    this.expediente = {
-      horario_expediente_id: null,
-      hora_abertura: null,
-      hora_fechamento: null,
-      intervalo_inicio: null,
-      intervalo_fim: null,
-    };
-    this.service = {
-      id: null,
-      duracao: null,
-      vlr: null,
-    };
-    this.carregarDiasSemana();
-    this.carregarEmpresa();
-    this.carregarServicos();
+    //this.carregarEmpresa();
+  },
+  watch: {
+    empresa: {
+      immediate: true, // Executa ao iniciar o componente
+      handler(novaEmpresa) {
+        if (novaEmpresa) {
+          this.carregarEmpresa();
+        }
+      }
+    }
   },
   methods: {
     async salvarEmpresa() {
@@ -340,41 +216,6 @@ export default {
         this.loading = false;
       }
     },
-    async carregarServicos() {
-      try {
-        const servicos = await this.$store.dispatch(
-          "servico/buscarServico"
-        );
-        this.servicos = servicos.map((servico) => ({
-          id: servico.id,
-          descricao: servico.descricao
-        }));
-
-        this.atualizarServicosDisponiveis();
-      } catch (error) {
-        console.error("ERRO AO CARREGAR SERVIÇOS: ", error);
-        this.alertTitle = "ERRO AO CARREGAR SERVIÇOS: " + error;
-        this.snackbar = true;
-      }
-    },
-    async carregarDiasSemana() {
-      try {
-        const dias = await this.$store.dispatch(
-          "horarioExpediente/buscarHorarioExpediente"
-        );
-        this.diasDaSemana = dias.map((dia) => ({
-          id: dia.id,
-          descricao: dia.descricao,
-        }));
-
-        this.atualizarDiasDisponiveis();
-        this.atualizarServicosDisponiveis();
-      } catch (error) {
-        console.error("ERRO AO CARREGAR DIAS DA SEMANA: ", error);
-        this.alertTitle = "ERRO AO CARREGAR DIAS DA SEMANA: " + error;
-        this.snackbar = true;
-      }
-    },
     async carregarEmpresa() {
       this.$root.setLoadingState(true);
       const credencial = localStorage.getItem("googleUserCredential");
@@ -383,33 +224,19 @@ export default {
         this.form.email = credencialObj.email;
         this.form.nome_completo = credencialObj.name;
         try {
-          const empresa = await this.$store.dispatch(
+          /*const empresa = await this.$store.dispatch(
             "empresa/buscarEmpresa",
             credencialObj.email
-          );
+          );*/
+          const empresa = this.empresa;
 
           if (empresa && Object.keys(empresa).length > 0) {
 
             this.form.razao_social = empresa.razao_social;
             this.form.cnpj = empresa.cnpj;
             this.form.hash = empresa?.hash;
-            this.form.celular = empresa.agenda_user?.celular;
-            this.form.listaExpedientes = empresa.agenda_empresa_expedientes.map((item) => ({
-              horario_expediente_id:item.horario_expediente_id,
-              hora_abertura: item.hora_abertura,
-              hora_fechamento: item.hora_fechamento,
-              intervalo_inicio: item.intervalo_inicio,
-              intervalo_fim: item.intervalo_fim,
-            }));
-
-            this.form.listaServicos = empresa.agenda_empresa_servicos.map((item) => ({
-              id:item.id,
-              duracao: item.duracao,
-              vlr: item.vlr,
-            }));
-
-            this.atualizarDiasDisponiveis();
-            this.atualizarServicosDisponiveis();
+            this.form.celular = empresa.agenda_user?.celular
+            this.form.plano_recurso = empresa.plano_recurso;
           }
         } catch (error) {
           console.error("ERRO AO CARREGAR EMPRESA: ", error);
@@ -420,134 +247,8 @@ export default {
         }
       }
     },
-    atualizarDiasDisponiveis() {
-      const diasJaAdicionados = this.form.listaExpedientes.map(
-        (expediente) => expediente.horario_expediente_id
-      );
-      this.diasDisponiveis = this.diasDaSemana.filter(
-        (dia) => !diasJaAdicionados.includes(dia.id)
-      );
-    },
-    atualizarServicosDisponiveis() {
-      const servicosJaAdicionados = this.form.listaServicos.map(
-        (servico) => servico.id
-      );
-      this.servicosDisponiveis = this.servicos.filter(
-        (servico) => !servicosJaAdicionados.includes(servico.id)
-      );
-    },
-    adicionarExpediente() {
-      if (
-        this.expediente.horario_expediente_id !== null &&
-        this.expediente.hora_abertura &&
-        this.expediente.hora_fechamento &&
-        this.expediente.intervalo_inicio &&
-        this.expediente.intervalo_fim
-      ) {
-        this.form.listaExpedientes.push({ ...this.expediente });
-        this.expediente = {
-          horario_expediente_id: null,
-          hora_abertura: null,
-          hora_fechamento: null,
-          intervalo_inicio: null,
-          intervalo_fim: null,
-        };
-        this.atualizarDiasDisponiveis();
-      } else {
-        this.alertTitle = "POR FAVOR, PREENCHA TODOS OS CAMPOS ANTES DE ADICIONAR";
-        this.snackbar = true;
-      }
-    },
-    adicionarServico() {
-      if (
-        this.service.id !== null &&
-        this.service.duracao &&
-        this.service.vlr
-      ) {
-        this.form.listaServicos.push({ ...this.service });
-        this.expediente = {
-          id : null,
-          duracao : null,
-          vlr: null
-        };
-        this.atualizarServicosDisponiveis();
-      } else {
-        this.alertTitle = "POR FAVOR, PREENCHA TODOS OS CAMPOS ANTES DE ADICIONAR";
-        this.snackbar = true;
-      }
-    },
-    removerExpediente(index) {
-      this.form.listaExpedientes.splice(index, 1);
-      this.atualizarDiasDisponiveis();
-    },
-    removerServico(index) {
-      this.form.listaServicos.splice(index, 1);
-      this.atualizarServicosDisponiveis();
-    },
-    getDiaDescricao(horario_expediente_id) {
-      const dia = this.diasDaSemana.find(
-        (item) => item.id === horario_expediente_id
-      );
-      return dia ? dia.descricao : "DIA NÃO ENCONTRADO";
-    },
-    getServicoDescricao(id) {
-      const descricao = this.servicos.find(
-        (item) => item.id === id
-      );
-      return descricao ? descricao.descricao : "SERVIÇO NÃO ENCONTRADO";
-    },
     formataCelular(celular){
         return celular.replace(" ", "").replace("-", "").replace(".", "").replace(/"/g, "").replace(/'/g, "").replace(/\(|\)/g, "");
-    },
-    formataHora(hora) {
-      if (!hora) return "";
-      const [hour, minute] = hora.split(":");
-      return `${hour}:${minute}`;
-    },
-    formatarHorario(input) {
-      if (!input) return "";
-
-      // Converte para string e remove caracteres não numéricos
-      const digits = input.toString().replace(/\D/g, "");
-
-      // Verifica o comprimento do valor e formata adequadamente
-      switch (digits.length) {
-        case 1:
-          return `0${digits}:00`; // Ex.: 1 -> 01:00
-        case 2:
-          return `${digits}:00`; // Ex.: 11 -> 11:00
-        case 3:
-          return `${digits.slice(0, 2)}:${digits.slice(2, 3)}0`; // Ex.: 111 -> 11:10
-        case 4:
-          return `${digits.slice(0, 2)}:${digits.slice(2, 4)}`; // Ex.: 1111 -> 11:11
-        default:
-          return `${digits.slice(0, 2)}:${digits.slice(2, 4)}`; // Ignora dígitos extras
-      }
-    },
-    formatarValorMonetario(input) {
-      if (!input) return "0,00";
-
-      // Remove caracteres não numéricos, exceto vírgula
-      input = input.replace(/[^0-9,]/g, "");
-
-      // Verificar se já contém uma vírgula
-      if (input.includes(",")) {
-        let [reais, centavos = ""] = input.split(",");
-
-        // Ajustar centavos para exatamente 2 dígitos
-        if (centavos.length === 0) {
-          centavos = "00";
-        } else if (centavos.length === 1) {
-          centavos = `${centavos}0`;
-        } else if (centavos.length > 2) {
-          centavos = centavos.slice(0, 2);
-        }
-
-        return `${reais},${centavos}`;
-      }
-
-      // Se não contém vírgula, adiciona ",00" no final
-      return `${input},00`;
     },
     copiarTexto() {
       // Seleciona o texto do campo
@@ -575,16 +276,8 @@ export default {
   import { vMaska } from "maska/vue"
 </script>
 <style>
-.horario-wrapper {
-  gap: 5px; /* Ajuste o espaçamento entre os horários */
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  width: 100%;
-}
-
-.horario {
-  text-align: right;
-  margin-left: 5px; /* Caso precise de mais espaçamento interno */
+.selected-plan {
+  border: 2px solid #1976D2; /* Azul do Vuetify */
+  background-color: #E3F2FD;
 }
 </style>

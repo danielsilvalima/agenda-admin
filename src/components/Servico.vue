@@ -6,7 +6,7 @@
   {{ alertTitle }}
 
     <template v-slot:actions>
-      <v-btn
+      <v-btn size="small"
         color="blue"
         variant="text"
         @click="snackbar = false"
@@ -15,127 +15,154 @@
       </v-btn>
     </template>
   </v-snackbar>
-  <v-app>
-    <SideMenu>
+  <SideMenu />
 
-      <v-card class="mx-auto my-6"
-        elevation="16"
-        width="600px">
+    <v-card class="mx-auto my-6"
+      elevation="16"
+      >
 
-        <v-card-item>
-            <v-card-title class="text-center ">
-                CADASTRO DE SERVIÇO
-            </v-card-title>
-        </v-card-item>
+      <v-card-item>
+          <v-card-title class="text-center text-caption">
+              CADASTRO DE SERVIÇO
+          </v-card-title>
+      </v-card-item>
 
-        <v-card-text>
+      <v-card-text>
 
-          <v-row dense>
-            <v-col cols="12" md="12">
-              <v-text-field
-                v-model="service.descricao"
-                label="DESCRIÇÂO DO SERVIÇO"
-                :rules="[rules.required]"
-                placeholder="DIGITE A DECRIÇÃO DO SERVIÇO"
-                dense
-              ></v-text-field>
-            </v-col>
+        <v-row dense>
 
-            <v-col cols="6" md="6" >
-              <v-text-field density="compact" :rules="[rules.required]" label="VALOR"
-                maxLength="7" v-model="service.vlr"
-                prefix="R$"
-                type="decimal"
-                @blur="service.vlr = formatarValorMonetario(service.vlr)"
-                id="vlr" name="vlr">
-              </v-text-field>
-            </v-col>
+          <v-col cols="12" md="12">
+            <p class="secondary-text text-caption text-center">ESCOLHA O RECURSO DESEJADO ABAIXO</p>
+            <v-window v-model="window" show-arrows>
+              <v-window-item v-for="(grupo, index) in recursosPaginados" :key="index">
+                <v-container>
+                  <v-row justify="center">
+                    <v-col v-for="recurso in grupo" :key="recurso.id" cols="12" sm="4" md="2">
+                      <v-card
+                        class="d-flex flex-column justify-center align-center pa-4 mx-2 text-center"
+                        height="100px" width="140px"
+                        elevation="2"
+                        :class="{ 'selected': selectedRecurso === recurso }"
+                        @click="selecionarRecurso(recurso)"
+                      >
+                        <v-img
+                          :width="80"
+                          aspect-ratio="16/9"
+                          cover style="border-radius: 50%;"
+                          :src="recurso.path">
+                        </v-img>
+                        <span class="text-caption font-weight-bold" style="white-space: normal; word-wrap: break-word;">
+                          {{ recurso.descricao }}
+                        </span>
+                      </v-card>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-window-item>
+            </v-window>
+          </v-col>
 
-            <v-col cols="6" md="6">
-              <v-text-field
-                density="compact"
-                :rules="[rules.required]"
-                label="DURAÇÃO (HH:MM)"
-                v-maska="'##:##'"
-                type="time"
-                maxLength="5"
-                v-model="service.duracao"
-                @blur="service.duracao = formatarHorario(service.duracao)"
-                id="duracao"
-                name="duracao">
-              </v-text-field>
-            </v-col>
+          <v-col cols="12" md="12">
+            <v-text-field density="compact"
+              v-model="service.descricao"
+              label="DESCRIÇÂO DO SERVIÇO"
+              :rules="[rules.required]"
+              placeholder="EX: CORTE MASCULINO, UNHA MAO, ALUGUEL QUADRA"
+              dense
+            ></v-text-field>
+          </v-col>
 
-            <v-col cols="12" md="12" class="d-flex justify-end">
-              <v-btn color="secondary" @click="adicionarServico" >
-                ADICIONAR SERVIÇO
-              </v-btn>
-            </v-col>
-          </v-row>
+          <v-col cols="6" md="6" >
+            <v-text-field density="compact" :rules="[rules.required]" label="VALOR"
+              maxLength="7" v-model="service.vlr"
+              prefix="R$"
+              type="decimal"
+              @blur="service.vlr = formatarValorMonetario(service.vlr)"
+              id="vlr" name="vlr">
+            </v-text-field>
+          </v-col>
 
-          <v-list>
-            <template v-if="listaServicos.length === 0">
-              <v-card class="mb-4">
-                <v-list-item
-                  color="grey lighten-2"
-                  rounded="xl"
-                  class="d-flex justify-space-between align-center"
-                >
-                  <template v-slot:prepend>
-                    <strong>NENHUM SERVIÇO CADASTRADO</strong>
-                  </template>
-                </v-list-item>
-              </v-card>
-            </template>
-            <template v-else>
-              <v-card
-                v-for="(item, index) in listaServicos" :key="index"
-                class="mb-4"
+          <v-col cols="6" md="6">
+            <v-text-field
+              density="compact"
+              :rules="[rules.required]"
+              label="DURAÇÃO (HH:MM)"
+              v-maska="'##:##'"
+              type="time"
+              maxLength="5"
+              v-model="service.duracao"
+              @blur="service.duracao = formatarHorario(service.duracao)"
+              id="duracao"
+              name="duracao">
+            </v-text-field>
+          </v-col>
+
+          <v-col cols="12" md="12" class="d-flex justify-end">
+            <v-btn size="small" color="secondary" @click="adicionarServico" class="text-caption" >
+              ADICIONAR SERVIÇO
+            </v-btn>
+          </v-col>
+        </v-row>
+
+        <v-list>
+          <template v-if="listaServicos.length === 0">
+            <v-card class="mb-4">
+              <v-list-item
+                color="grey lighten-2"
+                rounded="xl"
+                class="d-flex justify-space-between align-center"
               >
-                <v-list-item
-                  color="primary"
-                  rounded="xl"
-                  class="d-flex justify-space-between align-center"
-                >
-                  <template v-slot:prepend>
-                    <v-btn
-                      icon="mdi-delete"
-                      variant="text" color="red"
-                      class="ml-auto "
-                      @click="removerServico(index)"
-                    ></v-btn>
-                    <strong>{{ item.descricao }}:</strong>
-                  </template>
-                  <template v-slot:append>
-                    <div class="d-flex justify-space-between horario-wrapper">
-                      <span class="font-weight-black text-body-2 mt-1 horario">R$ {{ parseFloat(item.vlr || 0).toFixed(2).replace('.', ',') }}</span>
-                      <span class="font-weight-black text-body-2 mt-1 horario">{{ formataHora(item.duracao) }}</span>
-                    </div>
-                  </template>
+                <template v-slot:prepend>
+                  <strong class="text-caption">NENHUM SERVIÇO CADASTRADO</strong>
+                </template>
+              </v-list-item>
+            </v-card>
+          </template>
+          <template v-else>
+            <v-card
+              v-for="(item, index) in listaServicos" :key="index"
+              class="mb-4"
+            >
+              <v-list-item
+                color="primary"
+                rounded="xl"
+                class="d-flex justify-space-between align-center"
+              >
+                <template v-slot:prepend>
+                  <v-btn size="small"
+                    icon="mdi-delete"
+                    variant="text" color="red"
+                    class="ml-auto text-caption"
+                    @click="removerServico(index)"
+                  ></v-btn>
+                  <strong>{{ item.descricao }} - {{ item.agenda_empresa_recursos?.descricao || 'SEM RECURSO' }}</strong>
+                </template>
+                <template v-slot:append>
+                  <div class="d-flex justify-space-between horario-wrapper ">
+                    <span class="font-weight-black text-body-2 mt-1 horario text-caption">R$ {{ parseFloat(item.vlr || 0).toFixed(2).replace('.', ',') }}</span>
+                    <span class="font-weight-black text-body-2 mt-1 horario text-caption">{{ formataHora(item.duracao) }}</span>
+                  </div>
+                </template>
 
-                </v-list-item>
-              </v-card>
-            </template>
-          </v-list>
+              </v-list-item>
+            </v-card>
+          </template>
+        </v-list>
 
-        </v-card-text>
+      </v-card-text>
 
-        <template v-slot:actions >
-          <v-btn block
-            :loading="loading"
-            color="primary"
-            text="CADASTRAR"
-            variant="elevated"
-            @click="salvarServicos" >
-            SALVAR
-          </v-btn>
-        </template>
+      <template v-slot:actions >
+        <v-btn size="small" block class="text-caption"
+          :loading="loading"
+          color="primary"
+          text="CADASTRAR"
+          variant="elevated"
+          @click="salvarServicos" >
+          SALVAR
+        </v-btn>
+      </template>
 
-    </v-card>
-
-    </SideMenu>
-  </v-app>
-
+  </v-card>
 
 </template>
 
@@ -155,6 +182,7 @@ export default {
       alertTitle: "",
       timeout: 3000,
       listaServicos : [],
+      listaRecursos : [],
       rules: {
         required: value => !!value || 'DEVE SER PREENCHIDO',
       },
@@ -163,58 +191,105 @@ export default {
         duracao: null,
         vlr: null,
       },
+      selectedRecurso: null,
+      window: 0
     };
   },
   computed: {
-    ...mapGetters("empresa",["getEmpresa"]), // Mapeia o getter para obter os dados da empresa
-    ...mapGetters("servico", ["getServico"]),
+    ...mapGetters("empresa", ["getEmpresa"]),
     empresa() {
       return this.getEmpresa; // Retorna os dados da empresa do estado global
     },
-    servico() {
-      return this.getServico;
-    },
+    recursosPaginados() {
+      if (!this.listaRecursos || this.listaRecursos.length === 0) return [];
+
+      const itemsPerPage = 5; // Altere conforme necessário
+      const paginas = [];
+
+      for (let i = 0; i < this.listaRecursos.length; i += itemsPerPage) {
+        paginas.push(this.listaRecursos.slice(i, i + itemsPerPage));
+      }
+
+      return paginas;
+    }
   },
   created() {
-    this.listaServicos = [];
-    this.service = {
-      id: null,
-      duracao: null,
-      vlr: null,
-    };
-    this.carregarEmpresa();
-    this.$root.setLoadingState(true);
+  },
+  watch: {
+    empresa: {
+      immediate: true, // Executa ao iniciar o componente
+      handler(novaEmpresa) {
+        if (novaEmpresa) {
+          this.carregarRecurso();
+        }
+      }
+    }
   },
   methods: {
-    async carregarEmpresa() {
-      this.$root.setLoadingState(true);
-      const credencial = localStorage.getItem("googleUserCredential");
-      if (credencial) {
-        const credencialObj = JSON.parse(credencial);
+    async carregarServico(recurso) {
+      if(this.empresa?.id){
+        this.$root.setLoadingState(true);
 
-        try {
-          const empresa = await this.$store.dispatch(
-            "empresa/buscarEmpresa",
-            credencialObj.email
-          );
+        const credencial = localStorage.getItem("googleUserCredential");
+        if (credencial) {
 
-          if (empresa && Object.keys(empresa).length > 0) {
+          try {
+            const empresa = await this.$store.dispatch(
+              "servico/buscarServico",
+              {id: this.empresa.id, empresa_recurso_id: recurso.id}
+            );
 
-            console.log(empresa?.agenda_empresa_servicos);
-            this.listaServicos = empresa.agenda_empresa_servicos.map((item) => ({
-              id:item.id,
-              duracao: item.duracao,
-              vlr: item.vlr,
-              descricao: item.descricao
-            }));
-            console.log(this.listaServicos);
+            if (empresa && Object.keys(empresa).length > 0) {
+
+              this.listaServicos = empresa.agenda_empresa_servicos?.map((item) => ({
+                id: item.id,
+                duracao: item.duracao,
+                vlr: item.vlr,
+                descricao: item.descricao,
+                agenda_empresa_recursos:
+                   { descricao: item.agenda_empresa_recursos.descricao,
+                    id: item.agenda_empresa_recursos.id,
+                    empresa_recurso_id: item.empresa_recurso_id
+                  }
+              })) || [];
+            }
+          } catch (error) {
+            console.error("ERRO AO CARREGAR EMPRESA: ", error);
+            this.alertTitle = "ERRO AO CARREGAR EMPRESA: " + error;
+            this.snackbar = true;
+          } finally {
+            this.$root.setLoadingState(false);
           }
-        } catch (error) {
-          console.error("ERRO AO CARREGAR EMPRESA: ", error);
-          this.alertTitle = "ERRO AO CARREGAR EMPRESA: " + error;
-          this.snackbar = true;
-        } finally {
-          this.$root.setLoadingState(false);
+        }
+      }
+    },
+    async carregarRecurso() {
+      if(this.empresa?.id){
+        this.$root.setLoadingState(true);
+        const credencial = localStorage.getItem("googleUserCredential");
+        if (credencial) {
+
+          try {
+            const empresa = await this.$store.dispatch(
+              "recurso/buscarRecurso",
+              this.empresa.id
+            );
+
+            if (empresa && Object.keys(empresa).length > 0) {
+
+              this.listaRecursos = empresa.agenda_empresa_recursos?.map((item) => ({
+                id:item.id,
+                descricao: item.descricao,
+                path: `${import.meta.env.VITE_APP}/storage/${item.path}`
+              }));
+            }
+          } catch (error) {
+            console.error("ERRO AO CARREGAR EMPRESA: ", error.response.data.message);
+            this.alertTitle = "ERRO AO CARREGAR EMPRESA: " + error.response.data.message;
+            this.snackbar = true;
+          } finally {
+            this.$root.setLoadingState(false);
+          }
         }
       }
     },
@@ -222,6 +297,11 @@ export default {
       if (!this.service.descricao || !this.service.vlr || !this.service.duracao) {
         this.alertTitle = "POR FAVOR, PREENCHA TODOS OS CAMPOS ANTES DE ADICIONAR";
         this.snackbar = true;
+        return;
+      }else if(this.selectedRecurso === null){
+        this.alertTitle = "POR FAVOR, SELECIONE UM DOS RECURSOS DISPONÍVEIS";
+        this.snackbar = true;
+        return;
       } else {
         const duplicado = this.listaServicos.find(
           (servico) => servico.descricao === this.service.descricao
@@ -234,9 +314,13 @@ export default {
 
         this.service.vlr = parseFloat(this.service.vlr.replace(',', '.')).toFixed(2);
 
-        this.listaServicos.push({ ...this.service });
+        this.listaServicos.push({
+          ...this.service,
+          agenda_empresa_recursos: {id: this.selectedRecurso.id, descricao: this.selectedRecurso.descricao
+        }});
+
         this.service = {
-          descricao: "",
+          descricao: null,
           vlr: null,
           duracao: null,
         };
@@ -248,13 +332,20 @@ export default {
     salvarServicos() {
       this.loading = true;
 
+      if(!this.empresa.id){
+        this.alertTitle = 'NECESSÁRIO CADASTRAR A EMPRESA';
+        this.snackbar = true;
+        this.loading = false;
+        return;
+      }
+
       this.empresa.agenda_empresa_servicos = this.listaServicos;
       this.listaServicos = this.listaServicos.map(servico => ({
         ...servico,
         vlr: servico.vlr.replace(',', '.'),
       }));
-
       const payload = {
+        id: this.empresa.id,
         razao_social: this.empresa.razao_social,
         cnpj: this.empresa.cnpj,
         agenda_empresa_servicos: this.listaServicos,
@@ -264,16 +355,14 @@ export default {
         .then(() => {
           this.alertTitle = 'SALVO COM SUCESSO';
           this.snackbar = true;
-
-          this.$router.push(`/servico`);
+          this.loading = false;
         })
         .catch(error => {
-          console.error("ERRO AO SALVAR O SERVIÇO:", error);
-          this.alertTitle = 'ERRO AO SALVAR O SERVIÇO: ' + error;
+          console.error("ERRO AO SALVAR O SERVIÇO:", error.response.data.message);
+          this.alertTitle = 'ERRO AO SALVAR O SERVIÇO: ' + error.response.data.message;
           this.snackbar = true;
-        }).finally(() => {
           this.loading = false;
-      });
+        });
     },
     formatarHorario(input) {
       if (!input) return "";
@@ -325,9 +414,29 @@ export default {
       // Se não contém vírgula, adiciona ",00" no final
       return `${input},00`;
     },
+    selecionarRecurso(index) {
+      this.carregarServico(index);
+      this.selectedRecurso = index;
+    },
   },
 };
 </script>
 <script setup>
   import { vMaska } from "maska/vue"
 </script>
+
+<style>
+
+.selected {
+  border: 2px solid #1976d2; /* Cor azul do Vuetify */
+  background-color: rgba(25, 118, 210, 0.2); /* Leve realce no fundo */
+  transition: all 0.3s ease-in-out;
+}
+
+.recurso-imagem {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+</style>

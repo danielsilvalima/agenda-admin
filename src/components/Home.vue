@@ -6,7 +6,7 @@
   {{ alertTitle }}
 
     <template v-slot:actions>
-      <v-btn
+      <v-btn size="small"
         color="blue"
         variant="text"
         @click="snackbar = false"
@@ -15,10 +15,9 @@
       </v-btn>
     </template>
   </v-snackbar>
-  <v-app>
+
     <SideMenu
     />
-    </v-app>
 
 </template>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="fullscreen-container">
-    <h3 class="mb-2 mx-2 title">Pagína não encontrada 🚧</h3>
+    <h3 class="mb-2 mx-2 title text-caption">Pagína não encontrada 🚧</h3>
     <v-img
       :width="300"
       aspect-ratio="16/9"

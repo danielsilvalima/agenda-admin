@@ -6,7 +6,7 @@
   {{ alertTitle }}
 
     <template v-slot:actions>
-      <v-btn
+      <v-btn size="small"
         color="blue"
         variant="text"
         @click="snackbar = false"
@@ -15,72 +15,63 @@
       </v-btn>
     </template>
   </v-snackbar>
-  <v-app>
-    <SideMenu>
+  <SideMenu/>
 
-      <v-container class="d-flex justify-center align-start">
-        <v-row dense class="justify-center">
-          <v-card class="mx-auto my-6" elevation="16" width="600px">
-            <v-card-title>AGENDAMENTOS</v-card-title>
-            <v-card-text>
-              <v-date-input
-                v-model="dataSelecionada"
-                label="ESCOLHA A DATA"
-                prepend-icon=""
-                prepend-inner-icon="$calendar"
-                variant="solo"
-                placeholder="DD/MM/AAAA"
-                @update:model-value="buscarAgendamentos"
-              ></v-date-input>
+    <v-card class="mx-auto my-6" elevation="16" >
+      <v-card-title class="text-caption">AGENDAMENTOS</v-card-title>
+      <v-card-text>
+        <v-date-input class="text-caption"
+          v-model="dataSelecionada"
+          label="ESCOLHA A DATA"
+          prepend-icon=""
+          prepend-inner-icon="$calendar"
+          variant="solo"
+          placeholder="DD/MM/AAAA"
+          @update:model-value="buscarAgendamentos"
+        ></v-date-input>
 
-              <v-expansion-panels multiple>
-                <v-expansion-panel
-                  v-for="(agendamentos, data) in agendamentosPorData"
-                  :key="data"
-                >
-                  <v-expansion-panel-title>
-                    {{ formatarData(data) }}
-                  </v-expansion-panel-title>
-                  <v-expansion-panel-text>
-                    <v-list>
-                      <v-list-item-group>
-                        <v-list-item
-                          v-for="agendamento in agendamentos"
-                          :key="agendamento.id"
-                        >
-                          <v-list-item-content>
-                            <v-list-item-title>
-                              {{ agendamento.cliente.nome_completo }} - {{ agendamento.servico.descricao }}
-                            </v-list-item-title>
-                            <v-list-item-subtitle>
-                              HORÁRIO: {{ formatarHora(agendamento.start_scheduling_at) }} -
-                              {{ formatarHora(agendamento.end_scheduling_at) }} |
-                              VALOR: R$ {{ formatarValorMonetario(agendamento.vlr)  }}
-                              <v-chip :color="getStatusColor(agendamento.status)">
-                              {{ traduzirStatus(agendamento.status) }}
-                            </v-chip>
-                            </v-list-item-subtitle>
-                          </v-list-item-content>
+        <v-expansion-panels multiple>
+          <v-expansion-panel
+            v-for="(agendamentos, data) in agendamentosPorData"
+            :key="data"
+          >
+            <v-expansion-panel-title class="text-caption">
+              {{ formatarData(data) }}
+            </v-expansion-panel-title>
+            <v-expansion-panel-text>
+              <v-list>
+                <v-list-item-group>
+                  <v-list-item
+                    v-for="agendamento in agendamentos"
+                    :key="agendamento.id"
+                  >
+                    <v-list-item-content>
+                      <v-list-item-title class="text-caption">
+                        {{ agendamento.cliente.nome_completo }} - {{ agendamento.servico.descricao }}
+                      </v-list-item-title>
+                      <v-list-item-subtitle class="text-caption">
+                        HORÁRIO: {{ formatarHora(agendamento.start_scheduling_at) }} -
+                        {{ formatarHora(agendamento.end_scheduling_at) }} |
+                        VALOR: R$ {{ formatarValorMonetario(agendamento.vlr)  }}
+                        <v-chip :color="getStatusColor(agendamento.status)">
+                        {{ traduzirStatus(agendamento.status) }}
+                      </v-chip>
+                      </v-list-item-subtitle>
+                    </v-list-item-content>
 
-                          <!-- v-chip exibindo o status com cor dinâmica -->
-                          <v-list-item-action>
+                    <!-- v-chip exibindo o status com cor dinâmica -->
+                    <v-list-item-action>
 
-                          </v-list-item-action>
+                    </v-list-item-action>
 
-                        </v-list-item>
-                      </v-list-item-group>
-                    </v-list>
-                  </v-expansion-panel-text>
-                </v-expansion-panel>
-              </v-expansion-panels>
-            </v-card-text>
-          </v-card>
-        </v-row>
-      </v-container>
-
-    </SideMenu>
-  </v-app>
-
+                  </v-list-item>
+                </v-list-item-group>
+              </v-list>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </v-card-text>
+    </v-card>
 
 </template>
 

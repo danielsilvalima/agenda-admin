@@ -15,13 +15,13 @@ export default {
     },
   },
   actions: {
-    async buscarHorarioExpediente({ commit }) {
+    async buscarHorarioExpediente({ commit }, ) {
       try {
         const response = await DataService.getHorarioExpediente();
         commit("setHorarioExpediente", response.data || null);
         return response.data;
       } catch (error) {
-        console.error(error.response?.data || error);
+        console.error(error.response?.data.message || error);
         commit("setHorarioExpediente", null);
         throw error;
       }

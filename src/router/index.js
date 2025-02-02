@@ -14,6 +14,8 @@ import Home from '../components/Home.vue'
 import Empresa from '../components/Empresa.vue'
 import Servico from '../components/Servico.vue'
 import Agendamento from '../components/Agendamento.vue'
+import Recurso from '../components/Recurso.vue'
+import Expediente from '../components/Expediente.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -42,6 +44,16 @@ const router = createRouter({
         path: "/agendamento",
         name: "Agendamento",
         component: Agendamento,
+      },
+      {
+        path: "/recurso",
+        name: "Recurso",
+        component: Recurso,
+      },
+      {
+        path: "/expediente",
+        name: "Expediente",
+        component: Expediente,
       },
       {
         path: "/:pathMatch(.*)*", // Captura rotas inexistentes
