@@ -130,10 +130,10 @@
               </template>
               <template v-slot:append>
                 <div class="d-flex justify-space-between horario-wrapper ">
-                  <span class="font-weight-black text-body-2 mt-1 horario text-caption">{{ formataHora(item.hora_abertura) }}</span>
-                  <span class="font-weight-black text-body-2 mt-1 horario text-caption">{{ formataHora(item.intervalo_inicio) }}</span>
-                  <span class="font-weight-black text-body-2 mt-1 horario text-caption">{{ formataHora(item.intervalo_fim) }}</span>
-                  <span class="font-weight-black text-body-2 mt-1 horario text-caption">{{ formataHora(item.hora_fechamento) }}</span>
+                  <span class="font-weight-black text-body-2 mt-1 horario text-caption">{{ formataHora(item.hora_abertura) }} /</span>
+                  <span class="font-weight-black text-body-2 mt-1 horario text-caption">{{ formataHora(item.intervalo_inicio) }} /</span>
+                  <span class="font-weight-black text-body-2 mt-1 horario text-caption">{{ formataHora(item.intervalo_fim) }} /</span>
+                  <span class="font-weight-black text-body-2 mt-1 horario text-caption">{{ formataHora(item.hora_fechamento) }} </span>
                 </div>
               </template>
 
@@ -326,6 +326,7 @@ export default {
         id: this.empresa.id,
         razao_social: this.empresa.razao_social,
         cnpj: this.empresa.cnpj,
+        agenda_empresa_recursos: this.selectedRecurso.id,
         agenda_empresa_expedientes: this.listaExpedientes,
         agenda_user: { id: this.empresa.agenda_user.id, email: this.empresa.agenda_user.email },
       };

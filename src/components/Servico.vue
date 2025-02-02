@@ -139,7 +139,7 @@
                 </template>
                 <template v-slot:append>
                   <div class="d-flex justify-space-between horario-wrapper ">
-                    <span class="font-weight-black text-body-2 mt-1 horario text-caption">R$ {{ parseFloat(item.vlr || 0).toFixed(2).replace('.', ',') }}</span>
+                    <span class="font-weight-black text-body-2 mt-1 horario text-caption">R$ {{ parseFloat(item.vlr).toFixed(2).replace('.', ',') }} /</span>
                     <span class="font-weight-black text-body-2 mt-1 horario text-caption">{{ formataHora(item.duracao) }}</span>
                   </div>
                 </template>
@@ -312,7 +312,7 @@ export default {
           return;
         }
 
-        this.service.vlr = parseFloat(this.service.vlr.replace(',', '.')).toFixed(2);
+        //this.service.vlr = parseFloat(this.service.vlr.replace(',', '.')).toFixed(2);
 
         this.listaServicos.push({
           ...this.service,
@@ -348,6 +348,7 @@ export default {
         id: this.empresa.id,
         razao_social: this.empresa.razao_social,
         cnpj: this.empresa.cnpj,
+        agenda_empresa_recursos: this.selectedRecurso.id,
         agenda_empresa_servicos: this.listaServicos,
         agenda_user: { id: this.empresa.agenda_user.id, email: this.empresa.agenda_user.email },
       };
@@ -431,12 +432,5 @@ export default {
   border: 2px solid #1976d2; /* Cor azul do Vuetify */
   background-color: rgba(25, 118, 210, 0.2); /* Leve realce no fundo */
   transition: all 0.3s ease-in-out;
-}
-
-.recurso-imagem {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
 }
 </style>
