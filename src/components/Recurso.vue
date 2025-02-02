@@ -280,6 +280,8 @@ export default {
           this.alertTitle = 'SALVO COM SUCESSO';
           this.snackbar = true;
           this.loading = false;
+
+          this.carregarRecurso();
         })
         .catch(error => {
           console.error("ERRO AO SALVAR O RECURSO:", error.response?.data.message);
