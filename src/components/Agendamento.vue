@@ -41,7 +41,6 @@
               {{ formatarData(data) }}
             </v-expansion-panel-title>
             <v-expansion-panel-text>
-              <v-container fluid>
               <v-list>
                 <v-list-item-group>
                   <v-list-item
@@ -49,34 +48,33 @@
                     :key="agendamento.id"
                     class="px-3 py-2"
                   >
-                  <v-card class="pa-2 w-100" elevation="2">
-                    <v-list-item-content>
-                      <v-list-item-title class="text-caption font-weight-bold text-body-1">
-                        {{ agendamento.cliente.nome_completo }} - {{ agendamento.servico.descricao }}
-                      </v-list-item-title>
+                    <v-card class="pa-2 w-100" elevation="2">
+                      <v-list-item-content>
+                        <v-list-item-title class="text-caption font-weight-bold text-body-1">
+                          {{ agendamento.cliente.nome_completo }} - {{ agendamento.servico.descricao }}
+                        </v-list-item-title>
 
-                      <v-list-item-subtitle class="text-caption">
-                        HORÁRIO:
-                        <strong>{{ formatarHora(agendamento.start_scheduling_at) }}</strong> -
-                        <strong>{{ formatarHora(agendamento.end_scheduling_at) }}</strong> |
-                        VALOR: <strong>R$ {{ formatarValorMonetario(agendamento.vlr) }}</strong>
-                      </v-list-item-subtitle>
+                        <v-list-item-subtitle class="text-caption">
+                          HORÁRIO:
+                          <strong>{{ formatarHora(agendamento.start_scheduling_at) }}</strong> -
+                          <strong>{{ formatarHora(agendamento.end_scheduling_at) }}</strong> |
+                          VALOR: <strong>R$ {{ formatarValorMonetario(agendamento.vlr) }}</strong>
+                        </v-list-item-subtitle>
 
-                      <!-- Status com `v-chip` ajustado para mobile -->
-                      <v-chip
-                        :color="getStatusColor(agendamento.status)"
-                        class="mt-2"
-                        small
-                      >
-                        {{ traduzirStatus(agendamento.status) }}
-                      </v-chip>
-                    </v-list-item-content>
-                  </v-card>
+                        <!-- Status com `v-chip` ajustado para mobile -->
+                        <v-chip
+                          :color="getStatusColor(agendamento.status)"
+                          class="mt-2"
+                          small
+                        >
+                          {{ traduzirStatus(agendamento.status) }}
+                        </v-chip>
+                      </v-list-item-content>
+                    </v-card>
 
                   </v-list-item>
                 </v-list-item-group>
               </v-list>
-            </v-container>
             </v-expansion-panel-text>
           </v-expansion-panel>
         </v-expansion-panels>
