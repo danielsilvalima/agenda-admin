@@ -27,6 +27,8 @@
           prepend-inner-icon="$calendar"
           variant="solo"
           placeholder="DD/MM/AAAA"
+          hide-actions
+          type="button"
           @update:model-value="buscarAgendamentos"
         ></v-date-input>
 

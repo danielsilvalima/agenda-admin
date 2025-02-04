@@ -36,26 +36,29 @@
             <v-window v-model="window" show-arrows>
               <v-window-item v-for="(grupo, index) in recursosPaginados" :key="index">
                 <v-container>
-                  <v-row justify="center">
-                    <v-col v-for="recurso in grupo" :key="recurso.id" cols="12" sm="4" md="2">
-                      <v-card
-                        class="d-flex flex-column justify-center align-center pa-4 mx-2 text-center"
-                        height="100px" width="140px"
-                        elevation="2"
-                        :class="{ 'selected': selectedRecurso === recurso }"
-                        @click="selecionarRecurso(recurso)"
-                      >
-                        <v-img
-                          :width="80"
-                          aspect-ratio="16/9"
-                          cover style="border-radius: 50%;"
-                          :src="recurso.path">
-                        </v-img>
-                        <span class="text-caption font-weight-bold" style="white-space: normal; word-wrap: break-word;">
-                          {{ recurso.descricao }}
-                        </span>
-                      </v-card>
-                    </v-col>
+                  <v-row justify="center" no-gutters >
+                    <v-slide-group show-arrows>
+                      <v-slide-group-item v-for="recurso in grupo" :key="recurso.id">
+                        <v-card
+                          class="d-flex flex-column justify-center align-center pa-4 mx-2 text-center mb-2"
+                          height="110px" width="100px"
+                          elevation="2"
+                          :class="{ 'selected': selectedRecurso === recurso }"
+                          @click="selecionarRecurso(recurso)"
+                        >
+                          <v-img
+                            :width="50"
+                            :height="50"
+                            aspect-ratio="16/9"
+                            cover style="border-radius: 50%;"
+                            :src="recurso.path">
+                          </v-img>
+                          <span class="text-caption font-weight-bold" style="white-space: normal; word-wrap: break-word;">
+                            {{ recurso.descricao }}
+                          </span>
+                        </v-card>
+                      </v-slide-group-item>
+                    </v-slide-group>
                   </v-row>
                 </v-container>
               </v-window-item>

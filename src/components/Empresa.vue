@@ -141,7 +141,7 @@ export default {
         celular: "",
         email: "",
         hash: "",
-        plano_recurso: ""
+        plano_recurso: "1"
       },
       rules: {
         required: value => !!value || 'DEVE SER PREENCHIDO',
