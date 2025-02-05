@@ -66,6 +66,26 @@
                 @click:append-inner="copiarTexto"></v-text-field>
             </v-col>
 
+            <v-row no-gutters>
+              <v-col cols="12" md="6" >
+                <v-switch readonly="true"
+                  v-model="form.status"
+                  :color="form.status ? 'success': 'error'"
+                  label="ATIVADO"
+                  hide-details
+                ></v-switch>
+              </v-col>
+
+              <v-col cols="12" md="6" >
+                <v-switch readonly="true"
+                  v-model="form.expiration"
+                  :color="form.expiration ? 'error': 'success'"
+                  label="EXPIRADO"
+                  hide-details
+                ></v-switch>
+              </v-col>
+            </v-row>
+
             <v-row>
               <v-col cols="12" md="6">
                 <v-card :class="{ 'selected-plan': form.plano_recurso === '1' }">
@@ -141,7 +161,9 @@ export default {
         celular: "",
         email: "",
         hash: "",
-        plano_recurso: "1"
+        plano_recurso: "1",
+        expiration: "",
+        status: ""
       },
       rules: {
         required: value => !!value || 'DEVE SER PREENCHIDO',
@@ -237,6 +259,12 @@ export default {
             this.form.hash = empresa?.hash;
             this.form.celular = empresa.agenda_user?.celular
             this.form.plano_recurso = empresa.plano_recurso;
+            this.form.expiration = empresa.expiration;
+            if(empresa.status === 'A'){
+              this.form.status = true;
+            }else if(empresa.status === 'D'){
+              this.form.status = false;
+            }
           }
         } catch (error) {
           console.error("ERRO AO CARREGAR EMPRESA: ", error);
