@@ -152,6 +152,7 @@
           color="primary"
           text="CADASTRAR"
           variant="elevated"
+          :disabled="selectedRecurso === null"
           @click="salvarExpediente" >
           SALVAR
         </v-btn>

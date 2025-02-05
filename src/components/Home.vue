@@ -45,8 +45,18 @@ export default {
       return this.getEmpresa; // Retorna os dados da empresa do estado global
     },
   },
+  watch: {
+    empresa: {
+      immediate: true, // Executa ao iniciar o componente
+      handler(novaEmpresa) {
+        if (novaEmpresa) {
+          this.initializeFCM();
+        }
+      }
+    }
+  },
   created() {
-    this.$root.setLoadingState(true);
+    /*this.$root.setLoadingState(true);
     let credencial = localStorage.getItem("googleUserCredential");
 
     if (credencial) {
@@ -59,7 +69,7 @@ export default {
       }).finally(() => {
         this.$root.setLoadingState(false);
       });
-    }
+    }*/
   },
   methods: {
     async initializeFCM() {
@@ -90,7 +100,7 @@ export default {
     },
   },
   mounted() {
-    this.initializeFCM();
+    //this.initializeFCM();
   }
 };
 </script>
