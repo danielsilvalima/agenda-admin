@@ -92,7 +92,7 @@ export default {
         if (!usuario || !usuario.email) return;
 
 
-        //if (state.empresa?.token_notificacao !== newToken) {
+        if (state.empresa?.token_notificacao !== newToken) {
           console.log("Token do FCM atualizado, enviando para o backend...");
 
           let data = {email: usuario.email, hash: newToken};
@@ -100,7 +100,7 @@ export default {
 
           // Atualiza o estado
           commit("setEmpresa", { ...state.empresa, token_notificacao: newToken });
-        //}
+        }
       } catch (error) {
         console.error("Erro ao atualizar token do FCM:", error);
       }
