@@ -31,7 +31,7 @@ export default {
       try {
         const credencialObj = JSON.parse(credencial);
         commit("setUsuario", credencialObj);
-        const response = await DataService.getEmpresa(credencialObj.email);
+        const response = await DataService.getLogin(credencialObj.email);
 
         if (response.data && Object.keys(response.data).length > 0) {
           commit("setEmpresa", response.data);
@@ -39,7 +39,7 @@ export default {
           commit("setEmpresa", null);
         }
 
-        dispatch("atualizarTokenFCM", credencialObj.email);
+        //dispatch("atualizarToken", credencialObj.email);
       } catch (error) {
         console.error("Erro ao fazer login", error.message);
         throw error;
@@ -77,7 +77,7 @@ export default {
         throw error;
       }
     },
-    async atualizarTokenFCM({ state, commit }) {
+    async atualizarToken({ state, commit }) {
       try {
         const vapidKey =
           import.meta.env.VITE_APP_VAPID_KEY;

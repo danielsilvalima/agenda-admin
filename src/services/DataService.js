@@ -7,6 +7,12 @@ class DataService {
     });
   }
 
+  getLogin(email) {
+    return http_token.get(`/agenda/empresa/login`, {
+      params: { email },
+    });
+  }
+
   create(data) {
     return http_token.post(`/agenda/empresa`, data);
   }
