@@ -55,6 +55,10 @@ class DataService {
     });
   }
 
+  atualizarTokenFCM(data) {
+    return http_token.post(`/agenda/empresa/auth`, data);
+  }
+
 
 }
 

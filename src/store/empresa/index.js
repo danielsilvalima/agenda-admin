@@ -1,4 +1,7 @@
-import DataService from "../../services/DataService";
+import DataService from "@/services/DataService";
+import { getMessaging, getToken } from "firebase/messaging";
+
+const messaging = getMessaging();
 
 export default {
   namespaced: true,
@@ -24,7 +27,7 @@ export default {
     },
   },
   actions: {
-    async loginUsuario({ commit }, credencial) {
+    async loginUsuario({ commit, dispatch }, credencial) {
       try {
         const credencialObj = JSON.parse(credencial);
         commit("setUsuario", credencialObj);
@@ -35,6 +38,8 @@ export default {
         }else{
           commit("setEmpresa", null);
         }
+
+        dispatch("atualizarTokenFCM", credencialObj.email);
       } catch (error) {
         console.error("Erro ao fazer login", error.message);
         throw error;
@@ -72,5 +77,33 @@ export default {
         throw error;
       }
     },
+    async atualizarTokenFCM({ state, commit }) {
+      try {
+        const vapidKey =
+          import.meta.env.VITE_APP_VAPID_KEY;
+        const newToken = await getToken(messaging, { vapidKey });
+
+        if (!newToken) {
+          console.warn("Nenhum token FCM gerado.");
+          return;
+        }
+
+        const usuario = state.usuario;
+        if (!usuario || !usuario.email) return;
+
+
+        //if (state.empresa?.token_notificacao !== newToken) {
+          console.log("Token do FCM atualizado, enviando para o backend...");
+
+          let data = {email: usuario.email, hash: newToken};
+          await DataService.atualizarTokenFCM(data);
+
+          // Atualiza o estado
+          commit("setEmpresa", { ...state.empresa, token_notificacao: newToken });
+        //}
+      } catch (error) {
+        console.error("Erro ao atualizar token do FCM:", error);
+      }
+    }
   },
 };
