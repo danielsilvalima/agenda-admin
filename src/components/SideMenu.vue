@@ -63,7 +63,7 @@ export default {
         { title: 'HOME', route: '/home' },
         { title: 'AGENDAMENTOS', route: '/agendamento' },
         { title: 'EMPRESA', route: '/empresa' },
-        { title: 'RECURSO', route: '/recurso' },
+        { title: 'PROFISSIONAL', route: '/recurso' },
         { title: 'EXPEDIENTE', route: '/expediente' },
         { title: 'SERVIÇO', route: '/servico' }
       ],
