@@ -73,7 +73,7 @@ export default {
         const currentToken = await getToken(messaging, { vapidKey });
 
         if (currentToken) {
-          //console.log("Token FCM obtido com sucesso:", currentToken);
+          console.log("Token FCM obtido com sucesso:", currentToken);
           this.$store.commit("empresa/setToken", currentToken);
         } else {
           console.warn("Nenhum token FCM disponível. Verifique suas configurações.");

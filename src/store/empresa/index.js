@@ -102,7 +102,7 @@ export default {
 
 
 
-        //console.log("Token atualizado, enviando para o backend...");
+        console.log("Token atualizado, enviando para o backend...");
         let data = { email: email, hash: newToken };
         await DataService.atualizarToken(data);
 
