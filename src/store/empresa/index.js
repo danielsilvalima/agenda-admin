@@ -29,7 +29,6 @@ export default {
   actions: {
     async loginUsuario({ commit, dispatch }, credencial) {
       try {
-        console.log("LOGIN");
         const credencialObj = JSON.parse(credencial);
         commit("setUsuario", credencialObj);
         const response = await DataService.getLogin(credencialObj.email);
@@ -80,7 +79,6 @@ export default {
     },
     async atualizarToken({ state, commit }, email) {
       try {
-        console.log("ENTROU");
         const permission = await Notification.requestPermission();
         if (permission !== "granted") {
           //console.warn("Permissão para notificações negada.");
@@ -96,19 +94,22 @@ export default {
           return;
         }*/
 
+
         const empresa = state.empresa;
         /*if (!empresa || empresa.token_notificacao === newToken) {
           //console.log("Token já está atualizado.");
           return;
         }*/
 
-
-
-        console.log("Token atualizado, enviando para o backend...");
-        let data = { email: email, hash: newToken };
-        await DataService.atualizarToken(data);
+        if(newToken){
+          //console.log("Token atualizado, enviando para o backend...");
+          let data = { email: email, hash: newToken };
+          await DataService.atualizarToken(data);
 
         commit("setEmpresa", { ...empresa, token_notificacao: newToken });
+        }else{
+          console.log('Token vazio');
+        }
       } catch (error) {
         console.error("Erro ao atualizar token do FCM:", error);
       }
