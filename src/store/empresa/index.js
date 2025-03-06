@@ -29,6 +29,7 @@ export default {
   actions: {
     async loginUsuario({ commit, dispatch }, credencial) {
       try {
+        console.log('LOGIN');
         const credencialObj = JSON.parse(credencial);
         commit("setUsuario", credencialObj);
         const response = await DataService.getLogin(credencialObj.email);
@@ -39,7 +40,7 @@ export default {
           commit("setEmpresa", null);
         }
 
-        //dispatch("atualizarToken", credencialObj.email);
+        dispatch("atualizarToken", credencialObj.email);
       } catch (error) {
         console.error("Erro ao fazer login", error.message);
         throw error;
@@ -77,30 +78,39 @@ export default {
         throw error;
       }
     },
-    async atualizarToken({ state, commit }) {
+    async atualizarToken({ state, commit }, email) {
       try {
+        const permission = await Notification.requestPermission();
+        if (permission !== "granted") {
+          console.warn("Permissão para notificações negada.");
+          return;
+        }
+
         const vapidKey =
           import.meta.env.VITE_APP_VAPID_KEY;
         const newToken = await getToken(messaging, { vapidKey });
 
         if (!newToken) {
-          console.warn("Nenhum token FCM gerado.");
+          console.warn("Nenhum token gerado.");
+          return;
+        }
+        console.log('token');
+        console.log(newToken);
+
+        const empresa = state.empresa;
+        console.log(empresa);
+        if (!empresa || empresa.token_notificacao === newToken) {
+          console.log("Token já está atualizado.");
           return;
         }
 
-        const usuario = state.usuario;
-        if (!usuario || !usuario.email) return;
 
 
-        if (state.empresa?.token_notificacao !== newToken) {
-          console.log("Token do FCM atualizado, enviando para o backend...");
+        console.log("Token atualizado, enviando para o backend...");
+        let data = { email: email, hash: newToken };
+        await DataService.atualizarToken(data);
 
-          let data = {email: usuario.email, hash: newToken};
-          await DataService.atualizarTokenFCM(data);
-
-          // Atualiza o estado
-          commit("setEmpresa", { ...state.empresa, token_notificacao: newToken });
-        }
+        commit("setEmpresa", { ...empresa, token_notificacao: newToken });
       } catch (error) {
         console.error("Erro ao atualizar token do FCM:", error);
       }

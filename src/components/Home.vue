@@ -56,20 +56,7 @@ export default {
     }
   },
   created() {
-    /*this.$root.setLoadingState(true);
-    let credencial = localStorage.getItem("googleUserCredential");
 
-    if (credencial) {
-      let credencialObj = JSON.parse(credencial);
-
-      this.$store.dispatch("empresa/buscarEmpresa", credencialObj.email).catch((error) => {
-        console.error("ERRO AO BUSCAR EMPRESA: ", error);
-        this.alertTitle = "ERRO AO BUSCAR EMPRESA: " + error;
-        this.snackbar = true;
-      }).finally(() => {
-        this.$root.setLoadingState(false);
-      });
-    }*/
   },
   methods: {
     async initializeFCM() {
