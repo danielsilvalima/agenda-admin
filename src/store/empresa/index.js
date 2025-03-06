@@ -29,7 +29,6 @@ export default {
   actions: {
     async loginUsuario({ commit, dispatch }, credencial) {
       try {
-        console.log('LOGIN');
         const credencialObj = JSON.parse(credencial);
         commit("setUsuario", credencialObj);
         const response = await DataService.getLogin(credencialObj.email);
@@ -82,7 +81,7 @@ export default {
       try {
         const permission = await Notification.requestPermission();
         if (permission !== "granted") {
-          console.warn("Permissão para notificações negada.");
+          //console.warn("Permissão para notificações negada.");
           return;
         }
 
@@ -90,23 +89,20 @@ export default {
           import.meta.env.VITE_APP_VAPID_KEY;
         const newToken = await getToken(messaging, { vapidKey });
 
-        if (!newToken) {
-          console.warn("Nenhum token gerado.");
+        /*if (!newToken) {
+          //console.warn("Nenhum token gerado.");
           return;
-        }
-        console.log('token');
-        console.log(newToken);
+        }*/
 
         const empresa = state.empresa;
-        console.log(empresa);
-        if (!empresa || empresa.token_notificacao === newToken) {
-          console.log("Token já está atualizado.");
+        /*if (!empresa || empresa.token_notificacao === newToken) {
+          //console.log("Token já está atualizado.");
           return;
-        }
+        }*/
 
 
 
-        console.log("Token atualizado, enviando para o backend...");
+        //console.log("Token atualizado, enviando para o backend...");
         let data = { email: email, hash: newToken };
         await DataService.atualizarToken(data);
 
