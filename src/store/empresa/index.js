@@ -29,6 +29,7 @@ export default {
   actions: {
     async loginUsuario({ commit, dispatch }, credencial) {
       try {
+        console.log("LOGIN");
         const credencialObj = JSON.parse(credencial);
         commit("setUsuario", credencialObj);
         const response = await DataService.getLogin(credencialObj.email);
@@ -79,6 +80,7 @@ export default {
     },
     async atualizarToken({ state, commit }, email) {
       try {
+        console.log("ENTROU");
         const permission = await Notification.requestPermission();
         if (permission !== "granted") {
           //console.warn("Permissão para notificações negada.");

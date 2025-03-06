@@ -23,7 +23,7 @@
 
       <v-card-item>
           <v-card-title class="text-center text-caption">
-              CADASTRO DE RECURSO
+              CADASTRO DE PROFISSIONAL
           </v-card-title>
       </v-card-item>
 
@@ -34,7 +34,7 @@
             <v-text-field
               density="compact"
               v-model="resource.descricao"
-              label="DESCRIÇÃO DO RECURSO"
+              label="DESCRIÇÃO DO PROFISSIONAL"
               :rules="[rules.required]"
               placeholder="EX: PROFISSIONAL 1, PROFISSIONAL 2, QUADRA SINTÉTICA 01"
               dense
@@ -57,7 +57,7 @@
           <v-col cols="6">
             <v-file-input
               ref="fileInput"
-              label="IMAGEM DO RECURSO"
+              label="IMAGEM DO PROFISSIONAL"
               accept="image/png, image/jpeg"
               @change="handleFileUpload"
               show-size
@@ -85,7 +85,7 @@
                 class="d-flex justify-space-between align-center"
               >
                 <template v-slot:prepend>
-                  <strong class="text-caption">NENHUM RECURSO CADASTRADO</strong>
+                  <strong class="text-caption">NENHUM PROFISSIONAL CADASTRADO</strong>
                 </template>
               </v-list-item>
             </v-card>
@@ -228,7 +228,7 @@ export default {
           (recurso) => recurso.descricao === this.resource.descricao
         );
         if (duplicado) {
-          this.alertTitle = "ESTE RECURSO JÁ FOI ADICIONADO";
+          this.alertTitle = "ESTE PROFISSIONAL JÁ FOI ADICIONADO";
           this.snackbar = true;
           return;
         }
@@ -284,8 +284,8 @@ export default {
           this.carregarRecurso();
         })
         .catch(error => {
-          console.error("ERRO AO SALVAR O RECURSO:", error.response?.data.message);
-          this.alertTitle = 'ERRO AO SALVAR O REURSO: ' + error.response?.data.message;
+          console.error("ERRO AO SALVAR O PROFISSIONAL:", error.response?.data.message);
+          this.alertTitle = 'ERRO AO SALVAR O PROFISSIONAL: ' + error.response?.data.message;
           this.snackbar = true;
           this.loading = false;
         });

@@ -90,28 +90,28 @@
               <v-col cols="12" md="6">
                 <v-card :class="{ 'selected-plan': form.plano_recurso === '1' }">
                   <v-card-title>BÁSICO</v-card-title>
-                  <v-card-text>1 RECURSO.</v-card-text>
+                  <v-card-text>1 PROFISSIONAL.</v-card-text>
                 </v-card>
               </v-col>
 
               <v-col cols="12" md="6">
                 <v-card :class="{ 'selected-plan': form.plano_recurso === '2' }">
                   <v-card-title>PROFISSIONAL</v-card-title>
-                  <v-card-text>2 a 5 RECURSOS.</v-card-text>
+                  <v-card-text>2 a 5 PROFISSIONAIS.</v-card-text>
                 </v-card>
               </v-col>
 
               <v-col cols="12" md="6">
                 <v-card :class="{ 'selected-plan': form.plano_recurso === '3' }">
                   <v-card-title>PREMIUM</v-card-title>
-                  <v-card-text>6 a 15 RECURSOS.</v-card-text>
+                  <v-card-text>6 a 15 PROFISSIONAIS.</v-card-text>
                 </v-card>
               </v-col>
 
               <v-col cols="12" md="6">
                 <v-card :class="{ 'selected-plan': form.plano_recurso === '4' }">
                   <v-card-title>MASTER</v-card-title>
-                  <v-card-text>MAIS DE 15 RECURSOS.</v-card-text>
+                  <v-card-text>MAIS DE 15 PROFISSIONAIS.</v-card-text>
                 </v-card>
               </v-col>
             </v-row>

@@ -32,7 +32,7 @@
         <v-row dense>
 
           <v-col cols="12" md="12">
-            <p class="secondary-text text-caption text-center">ESCOLHA O RECURSO DESEJADO ABAIXO</p>
+            <p class="secondary-text text-caption text-center">ESCOLHA O PROFISSIONAL DESEJADO ABAIXO</p>
             <v-window v-model="window" show-arrows>
               <v-window-item v-for="(grupo, index) in recursosPaginados" :key="index">
                 <v-container>
@@ -138,7 +138,7 @@
                     class="ml-auto text-caption"
                     @click="removerServico(index)"
                   ></v-btn>
-                  <strong>{{ item.descricao }} - {{ item.agenda_empresa_recursos?.descricao || 'SEM RECURSO' }}</strong>
+                  <strong>{{ item.descricao }} - {{ item.agenda_empresa_recursos?.descricao || 'SEM PROFISSIONAL' }}</strong>
                 </template>
                 <template v-slot:append>
                   <div class="d-flex justify-space-between horario-wrapper ">
@@ -303,7 +303,7 @@ export default {
         this.snackbar = true;
         return;
       }else if(this.selectedRecurso === null){
-        this.alertTitle = "POR FAVOR, SELECIONE UM DOS RECURSOS DISPONÍVEIS";
+        this.alertTitle = "POR FAVOR, SELECIONE UM DOS PROFISSIONAIS DISPONÍVEIS";
         this.snackbar = true;
         return;
       } else {
