@@ -77,11 +77,12 @@ export default {
         .then((empresa) => {
           if (!empresa || Object.keys(empresa).length === 0) {
             this.$store.commit("empresa/setEmpresa", null);
-          }
-          if(empresa.message){
-            this.message = empresa.message;
           }else{
-            this.message = 'BEM-VINDO À SUA DASHBOARD! AQUI VOCÊ PODE ACESSAR SUAS FUNCIONALIDADES.';
+            if(empresa.message){
+              this.message = empresa.message;
+            }else{
+              this.message = 'BEM-VINDO À SUA DASHBOARD! AQUI VOCÊ PODE ACESSAR SUAS FUNCIONALIDADES.';
+            }
           }
         })
         .catch((error) => {
