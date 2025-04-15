@@ -1,85 +1,102 @@
+// router/index.ts
 
-/**
- * router/index.ts
- *
- * Automatic routes for `./src/pages/*.vue`
- */
+import { createRouter, createWebHistory } from "vue-router";
 
-// Composables
-import { createRouter, createWebHistory } from 'vue-router/auto'
-//import { routes } from 'vue-router/auto-routes'
-import NotFound from '../components/NotFound.vue'
-import Login from '../components/Login.vue'
-import Home from '../components/Home.vue'
-import Empresa from '../components/Empresa.vue'
-import Servico from '../components/Servico.vue'
-import Agendamento from '../components/Agendamento.vue'
-import Recurso from '../components/Recurso.vue'
-import Expediente from '../components/Expediente.vue'
+import DefaultLayout from "../layouts/DefaultLayout.vue";
+import AuthLayout from "../layouts/AuthLayout.vue";
 
-const router = createRouter({
-  history: createWebHistory(),
-    routes: [
+import NotFound from "../components/NotFound.vue";
+import Login from "../components/Login.vue";
+import Home from "../components/Home.vue";
+import Empresa from "../components/Empresa.vue";
+import Servico from "../components/Servico.vue";
+import Agendamento from "../components/Agendamento.vue";
+import Recurso from "../components/Recurso.vue";
+import Expediente from "../components/Expediente.vue";
+
+const routes = [
+  {
+    path: "/",
+    component: AuthLayout,
+    children: [
       {
-        path: "/",
+        path: "",
         name: "Login",
         component: Login,
       },
+    ],
+  },
+  {
+    path: "/app",
+    component: DefaultLayout,
+    children: [
       {
-        path: "/home",
+        path: "home",
         name: "Home",
         component: Home,
+        meta: { requiresAuth: true },
       },
       {
-        path: "/empresa",
+        path: "empresa",
         name: "Empresa",
         component: Empresa,
+        meta: { requiresAuth: true },
       },
       {
-        path: "/servico",
+        path: "servico",
         name: "Servico",
         component: Servico,
+        meta: { requiresAuth: true },
       },
       {
-        path: "/agendamento",
+        path: "agendamento",
         name: "Agendamento",
         component: Agendamento,
+        meta: { requiresAuth: true },
       },
       {
-        path: "/recurso",
+        path: "recurso",
         name: "Recurso",
         component: Recurso,
+        meta: { requiresAuth: true },
       },
       {
-        path: "/expediente",
+        path: "expediente",
         name: "Expediente",
         component: Expediente,
+        meta: { requiresAuth: true },
       },
-      {
-        path: "/:pathMatch(.*)*", // Captura rotas inexistentes
-        name: "NotFound",
-        component: NotFound,
-      },
-    ]
-})
+    ],
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "NotFound",
+    component: NotFound,
+  },
+];
 
-// Workaround for https://github.com/vitejs/vite/issues/11804
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
+});
+
+// Tratamento de erro de módulos dinâmicos do Vite
 router.onError((err, to) => {
-  if (err?.message?.includes?.('Failed to fetch dynamically imported module')) {
-    if (!localStorage.getItem('vuetify:dynamic-reload')) {
-      console.log('Reloading page to fix dynamic import error')
-      localStorage.setItem('vuetify:dynamic-reload', 'true')
-      location.assign(to.fullPath)
+  if (err?.message?.includes?.("Failed to fetch dynamically imported module")) {
+    if (!localStorage.getItem("vuetify:dynamic-reload")) {
+      console.log("Reloading page to fix dynamic import error");
+      localStorage.setItem("vuetify:dynamic-reload", "true");
+      location.assign(to.fullPath);
     } else {
-      console.error('Dynamic import error, reloading page did not fix it', err)
+      console.error("Dynamic import error, reloading page did not fix it", err);
     }
   } else {
-    console.error(err)
+    console.error(err);
   }
-})
+});
 
 router.isReady().then(() => {
-  localStorage.removeItem('vuetify:dynamic-reload')
-})
+  localStorage.removeItem("vuetify:dynamic-reload");
+});
 
-export default router
+export default router;

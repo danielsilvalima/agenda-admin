@@ -5,22 +5,36 @@
  */
 
 // Styles
-import '@mdi/font/css/materialdesignicons.css'
-import 'vuetify/styles'
+import "@mdi/font/css/materialdesignicons.css";
+import "vuetify/styles";
 
 // Composables
-import { createVuetify } from 'vuetify';
-import { pt } from 'vuetify/locale';
+import { createVuetify } from "vuetify";
+import { pt } from "vuetify/locale";
 
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
 export default createVuetify({
   locale: {
-    locale: 'pt', // Define o idioma padrão para 'pt-BR'
+    locale: "pt", // Define o idioma padrão para 'pt-BR'
     messages: { pt },
+  },
+  defaults: {
+    VTextField: {
+      variant: "outlined",
+      density: "compact",
+    },
+    VSelect: {
+      variant: "outlined",
+      density: "compact",
+    },
+    VAutocomplete: {
+      variant: "outlined",
+      density: "compact",
+    },
   },
   theme: {
     //defaultTheme: 'dark',
-    defaultTheme: 'light',
+    defaultTheme: "light",
     /*themes: {
       light: {
         dark: false, // Define se é um tema escuro (false para claro)
@@ -36,4 +50,4 @@ export default createVuetify({
       },
     }*/
   },
-})
+});

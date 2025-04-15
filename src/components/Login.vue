@@ -1,30 +1,24 @@
 <template>
-  <v-snackbar
-    v-model="snackbar"
-    :timeout="timeout"
-  >
-  {{ alertTitle }}
-
+  <v-snackbar v-model="snackbar" :timeout="timeout">
+    {{ alertTitle }}
     <template v-slot:actions>
-      <v-btn size="small"
-        color="blue"
-        variant="text"
-        @click="snackbar = false"
-      >
-        Close
+      <v-btn size="small" color="blue" variant="text" @click="snackbar = false">
+        Fechar
       </v-btn>
     </template>
   </v-snackbar>
+
   <div class="login-screen">
     <div class="login-container">
       <!-- Título e Subtítulo -->
-      <h1 class="login-title text-caption">Bem-vindo ao seu Painel de Administração</h1>
-      <p class="login-subtitle text-caption">
-        Gerencie seus pedidos e clientes de forma prática e eficiente
+      <h1 class="login-title">Bem-vindo ao seu Painel de Administração</h1>
+      <p class="login-subtitle">
+        Gerencie seus agendamentos e clientes de forma prática e eficiente
       </p>
 
       <!-- Botão de Login com o Google -->
-      <div v-if="!loggedIn">
+      <!--<div v-if="!loggedIn">-->
+        <div>
         <div class="google-login-wrapper">
           <GoogleLogin
             :callback="handleLoginCallback"
@@ -40,55 +34,57 @@
 
 <script>
 import { mapActions } from "vuex";
-import {decodeCredential} from 'vue3-google-login';
+import { decodeCredential } from "vue3-google-login";
+
 export default {
-  data(){
+  data() {
     return {
-      loggedIn:false,
-      user:null,
+      loggedIn: false,
+      user: null,
       snackbar: false,
       alertTitle: "",
       timeout: 3000,
-    }
+    };
   },
   created() {
-    // Verifica se há um token no localStorage ao carregar o componente
-    const storedCredential = localStorage.getItem("googleUserCredential");
-    if (storedCredential) {
-      const decodedUser = JSON.parse(storedCredential);
-      this.user = decodedUser;
-      this.loggedIn = true;
-
-      this.$store.dispatch("empresa/loginUsuario", storedCredential)
-        .then(() => {
-          this.$router.push("/home");
-        })
-        .catch(error => {
-          console.error("ERRO AO VERIFICAR USUÁRIO:", error);
-          this.alertTitle = 'ERRO AO VERIFICAR USUÁRIO: ' + error;
-          this.snackbar = true;
-        });
-    }
+    this.checkStoredCredential();
   },
   methods: {
-    ...mapActions("empresa",["loginUsuario"]),
+    ...mapActions("empresa", ["loginUsuario"]),
+
+    checkStoredCredential() {
+      const storedCredential = localStorage.getItem("googleUserCredential");
+      if (storedCredential) {
+        const decodedUser = JSON.parse(storedCredential);
+        this.user = decodedUser;
+        this.loggedIn = true;
+        this.loginUser(decodedUser);
+      }
+    },
+
     async handleLoginCallback(response) {
       const decodedUser = decodeCredential(response.credential);
       this.user = decodedUser;
-
-      // Armazena o token no localStorage
       localStorage.setItem("googleUserCredential", JSON.stringify(decodedUser));
+      await this.loginUser(decodedUser);
+    },
+
+    async loginUser(userCredential) {
       try {
-        await this.$store.dispatch("empresa/loginUsuario", JSON.stringify(decodedUser));
+        await this.$store.dispatch("empresa/loginUsuario", JSON.stringify(userCredential));
         this.loggedIn = true;
-        this.$router.push("/home");
+        this.$router.push("/app/home");
       } catch (error) {
-        console.error("ERRO AO FAZER LOGIN:", error);
-        this.alertTitle = 'ERRO AO FAZER LOGIN: ' + error;
-        this.snackbar = true;
+        this.showErrorSnackbar(error);
       }
     },
-  }
+
+    showErrorSnackbar(error) {
+      console.error("Erro ao realizar login:", error);
+      this.alertTitle = `Erro ao realizar login: ${error.message || error}`;
+      this.snackbar = true;
+    },
+  },
 };
 </script>
 
@@ -100,7 +96,7 @@ export default {
   align-items: center;
   height: 100vh;
   background: linear-gradient(135deg, #f3f4f6, #e9ecef);
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   color: #333;
   padding: 20px;
   text-align: center;
@@ -113,7 +109,7 @@ export default {
   background: white;
   padding: 30px 20px;
   border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Título */
@@ -136,14 +132,13 @@ export default {
   display: flex;
   width: 100%;
   justify-content: center;
-  align-items: center; /* Centraliza verticalmente */
 }
 
 /* Botão do Google */
 .google-login-btn {
   display: inline-block;
   width: 100%;
-  max-width: 269px; /* Largura máxima para centralizar bem */
+  max-width: 269px;
   font-size: 16px;
   font-weight: bold;
   text-align: center;

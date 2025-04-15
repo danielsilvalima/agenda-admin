@@ -38,7 +38,8 @@
           </div>
 
           <div v-else class="d-flex justify-center align-center" style="height: 100vh;">
-            <p class="text-caption">{{ message }}</p>
+            <!--<p class="text-caption">{{ message }}</p>-->
+            <Dashboard />
           </div>
         </template>
 
@@ -52,8 +53,11 @@ import {googleLogout} from 'vue3-google-login';
 import router from "@/router";
 import { mapActions, mapGetters } from "vuex";
 
+
 export default {
   name: "SideMenu",
+  components: {
+  },
   data() {
     return {
       drawer: false,

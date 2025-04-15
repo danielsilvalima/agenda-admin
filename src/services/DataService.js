@@ -65,6 +65,12 @@ class DataService {
     return http_token.post(`/agenda/empresa/auth`, data);
   }
 
+  getDashboard({ email, dataInicial, dataFinal, recurso }) {
+    return http_token.get(`/agenda/dashboard`, {
+      params: { email, dataInicial, dataFinal, recurso },
+    });
+  }
+
 
 }
 

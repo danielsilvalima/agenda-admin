@@ -14,7 +14,8 @@ import App from './App.vue'
 import { createApp } from 'vue'
 import vue3GoogleLogin from 'vue3-google-login'
 import store from './store';
-import './assets/css/global.css';
+import '@/assets/css/global.css';
+import ApexCharts from 'vue3-apexcharts'
 
 const app = createApp(App)
 
@@ -22,6 +23,7 @@ app.use(vue3GoogleLogin, {
   clientId: '1059389900242-7nftq473428e9v2eefp1c3cnr9cr2s0g.apps.googleusercontent.com'
 })
 
+app.component('apexchart', ApexCharts)
 app.use(store)
 
 registerPlugins(app)

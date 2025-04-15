@@ -8,7 +8,7 @@ export default {
   // Store (exemplo Vuex)
   state: {
     usuario: null,
-    empresa: null,
+    empresa: JSON.parse(localStorage.getItem("empresa")) || null,
     token: null,
   },
   getters: {
@@ -21,6 +21,7 @@ export default {
     },
     setEmpresa(state, empresa) {
       state.empresa = empresa;
+      localStorage.setItem("empresa", JSON.stringify(empresa));
     },
     setToken(state, token) {
       state.token = token;
@@ -38,6 +39,8 @@ export default {
         }else{
           commit("setEmpresa", null);
         }
+
+        commit("setEmpresa", response.data);
 
         dispatch("atualizarToken", credencialObj.email);
       } catch (error) {
