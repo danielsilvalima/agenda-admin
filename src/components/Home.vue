@@ -19,6 +19,7 @@
         <v-select
           v-model="recursosSelecionados"
           :items="recursoOptions"
+          :loading="loading"
           item-title="title"
           item-value="value"
           label="Profissional"
@@ -38,11 +39,11 @@
     </v-row>
 
     <v-row>
-      <v-col cols="12" md="3" v-for="card in cards" :key="card.title">
+      <v-col cols="12" sm="3" md="3" v-for="card in cards" :key="card.title">
         <v-card class="pa-4" elevation="3">
-          <v-icon :color="card.color" size="36">{{ card.icon }}</v-icon>
-          <div class="text-h6 mt-2">{{ card.title }}</div>
-          <div class="text-h5 font-weight-bold">{{ card.value }}</div>
+          <v-icon :color="card.color" size="20">{{ card.icon }}</v-icon>
+          <div class="text-h7 mt-2">{{ card.title }}</div>
+          <div class="text-h6 font-weight-bold">{{ card.value }}</div>
         </v-card>
       </v-col>
     </v-row>
@@ -87,6 +88,7 @@ import { getToken } from "firebase/messaging";
 export default {
   data() {
     return {
+      loading: false,
       dataInicial: new Date(
         new Date().getTime() - new Date().getTimezoneOffset() * 60000
       )
@@ -101,13 +103,13 @@ export default {
       recursosSelecionados: null,
       cards: [
         {
-          title: "Total de Agendamentos",
+          title: "Agendamentos",
           value: 0,
           icon: "mdi-calendar-check",
           color: "success",
         },
         {
-          title: "Total de cancelamentos",
+          title: "Cancelamentos",
           value: 0,
           icon: "mdi-calendar-remove",
           color: "error",
@@ -192,8 +194,8 @@ export default {
     },
     async filtrarDados() {
       try {
-
         this.$store.dispatch("loading/showLoading");
+        this.loading = true;
         const response = await this.$store.dispatch("dashboard/getDashboard", {
           email: this.empresa.agenda_user.email,
           dataInicial: this.dataInicial,
@@ -258,6 +260,7 @@ export default {
         });
       } finally {
         this.$store.dispatch("loading/hideLoading");
+        this.loading = false;
       }
     },
     async carregarRecurso() {

@@ -40,8 +40,6 @@ export default {
           commit("setEmpresa", null);
         }
 
-        commit("setEmpresa", response.data);
-
         dispatch("atualizarToken", credencialObj.email);
       } catch (error) {
         console.error("Erro ao fazer login", error.message);
