@@ -196,56 +196,61 @@ export default {
       try {
         this.$store.dispatch("loading/showLoading");
         this.loading = true;
-        const response = await this.$store.dispatch("dashboard/getDashboard", {
-          email: this.empresa.agenda_user.email,
-          dataInicial: this.dataInicial,
-          dataFinal: this.dataFinal,
-          recurso: this.recursosSelecionados
-        });
+        if (this.empresa) {
+          const response = await this.$store.dispatch(
+            "dashboard/getDashboard",
+            {
+              email: this.empresa.agenda_user?.email,
+              dataInicial: this.dataInicial,
+              dataFinal: this.dataFinal,
+              recurso: this.recursosSelecionados,
+            }
+          );
 
-        // Atualiza os cards
-        this.cards[0].value = response.totalAgendamentosAtivos;
-        this.cards[1].value = response.totalAgendamentosCancelados;
-        this.cards[2].value = response.servicosAtivos;
-        this.cards[3].value = response.recursosAtivos;
+          // Atualiza os cards
+          this.cards[0].value = response.totalAgendamentosAtivos;
+          this.cards[1].value = response.totalAgendamentosCancelados;
+          this.cards[2].value = response.servicosAtivos;
+          this.cards[3].value = response.recursosAtivos;
 
-        // Atualiza gráfico de serviços (Donut)
-        const servicoLabels = Object.keys(response.agendamentosPorServico);
-        const servicoValores = Object.values(response.agendamentosPorServico);
+          // Atualiza gráfico de serviços (Donut)
+          const servicoLabels = Object.keys(response.agendamentosPorServico);
+          const servicoValores = Object.values(response.agendamentosPorServico);
 
-        this.chartOptions = {
-          ...this.chartOptions,
-          labels: servicoLabels,
-        };
-        this.serviceData = servicoValores;
+          this.chartOptions = {
+            ...this.chartOptions,
+            labels: servicoLabels,
+          };
+          this.serviceData = servicoValores;
 
-        // Atualiza gráfico de dias (Barra)
-        const datasOrdenadas = Object.entries(response.agendamentosPorDia).sort(
-          ([dataA], [dataB]) => {
+          // Atualiza gráfico de dias (Barra)
+          const datasOrdenadas = Object.entries(
+            response.agendamentosPorDia
+          ).sort(([dataA], [dataB]) => {
             const [diaA, mesA, anoA] = dataA.split("/").map(Number);
             const [diaB, mesB, anoB] = dataB.split("/").map(Number);
             return (
               new Date(anoA, mesA - 1, diaA) - new Date(anoB, mesB - 1, diaB)
             );
-          }
-        );
-        const dias = datasOrdenadas.map(([data]) => data);
-        const agendamentos = datasOrdenadas.map(([, valor]) => valor);
+          });
+          const dias = datasOrdenadas.map(([data]) => data);
+          const agendamentos = datasOrdenadas.map(([, valor]) => valor);
 
-        this.barChartOptions = {
-          ...this.barChartOptions,
-          xaxis: {
-            ...this.barChartOptions.xaxis,
-            categories: dias,
-            type: "category",
-          },
-        };
-        this.dayData = [
-          {
-            name: "Agendamentos",
-            data: agendamentos,
-          },
-        ];
+          this.barChartOptions = {
+            ...this.barChartOptions,
+            xaxis: {
+              ...this.barChartOptions.xaxis,
+              categories: dias,
+              type: "category",
+            },
+          };
+          this.dayData = [
+            {
+              name: "Agendamentos",
+              data: agendamentos,
+            },
+          ];
+        }
       } catch (error) {
         console.error(
           "Erro ao carregar dashboard:",
@@ -265,26 +270,31 @@ export default {
     },
     async carregarRecurso() {
       this.loading = true;
+
       const credencial = localStorage.getItem("googleUserCredential");
       if (credencial) {
         try {
-          const empresa = await this.$store.dispatch(
-            "recurso/buscarRecurso",
-            this.empresa.id
-          );
-
-          if (empresa && Object.keys(empresa).length > 0) {
-            this.recursoOptions = empresa.agenda_empresa_recursos.map(
-              (recurso) => ({
-                title: recurso.descricao,
-                value: recurso.id,
-              })
+          if (this.empresa) {
+            console.log("teste");
+            console.log(this.empresa);
+            const empresa = await this.$store.dispatch(
+              "recurso/buscarRecurso",
+              this.empresa.id
             );
 
-            // Preenche os selecionados com todos os IDs retornados
-            this.recursosSelecionados = empresa.agenda_empresa_recursos.map(
-              (recurso) => recurso.id
-            );
+            if (empresa && Object.keys(empresa).length > 0) {
+              this.recursoOptions = empresa.agenda_empresa_recursos.map(
+                (recurso) => ({
+                  title: recurso.descricao,
+                  value: recurso.id,
+                })
+              );
+
+              // Preenche os selecionados com todos os IDs retornados
+              this.recursosSelecionados = empresa.agenda_empresa_recursos.map(
+                (recurso) => recurso.id
+              );
+            }
           }
         } catch (error) {
           console.error(

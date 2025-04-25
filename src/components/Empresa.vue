@@ -29,6 +29,7 @@
             v-model="form.cnpj"
             id="cnpj"
             name="cnpj"
+            v-maska="'##.###.###/####-##'"
           ></v-text-field>
         </v-col>
 
@@ -106,33 +107,43 @@
           </v-col>
         </v-row>
 
-        <v-row align-stretch>
-          <v-col cols="12" md="6">
-            <v-card :class="{ 'selected-plan': form.plano_recurso === '1' }" class="h-100">
-              <v-card-title>BÁSICO</v-card-title>
-              <v-card-text>1 PROFISSIONAL.</v-card-text>
-            </v-card>
-          </v-col>
+        <v-row align="stretch">
+          <template v-for="plano in planos" :key="plano.id">
+            <v-col cols="12" md="6">
+              <v-card
+                :class="[
+                  'h-100',
+                  form.plano_recurso === plano.id ? 'selected-plan' : '',
+                  planoBloqueado && form.plano_recurso !== plano.id
+                    ? 'plano-disabled'
+                    : '',
+                ]"
+                :elevation="form.plano_recurso === plano.id ? 12 : 2"
+                :ripple="!planoBloqueado"
+                @click="!planoBloqueado && selecionarPlano(plano.id)"
+              >
+                <v-card-title class="d-flex justify-space-between align-center">
+                  {{ plano.nome }}
+                  <v-icon
+                    v-if="form.plano_recurso === plano.id && planoBloqueado"
+                    color="red"
+                    >mdi-lock</v-icon
+                  >
+                </v-card-title>
+                <v-card-text>{{ plano.descricao }}</v-card-text>
+              </v-card>
+            </v-col>
+          </template>
 
-          <v-col cols="12" md="6">
-            <v-card :class="{ 'selected-plan': form.plano_recurso === '2' }" class="h-100">
-              <v-card-title>PROFISSIONAL</v-card-title>
-              <v-card-text>2 a 5 PROFISSIONAIS.</v-card-text>
-            </v-card>
-          </v-col>
-
-          <v-col cols="12" md="6">
-            <v-card :class="{ 'selected-plan': form.plano_recurso === '3' }" class="h-100">
-              <v-card-title>PREMIUM</v-card-title>
-              <v-card-text>6 a 15 PROFISSIONAIS.</v-card-text>
-            </v-card>
-          </v-col>
-
-          <v-col cols="12" md="6">
-            <v-card :class="{ 'selected-plan': form.plano_recurso === '4' }" class="h-100">
-              <v-card-title>MASTER</v-card-title>
-              <v-card-text>MAIS DE 15 PROFISSIONAIS.</v-card-text>
-            </v-card>
+          <v-col cols="12" v-if="planoBloqueado">
+            <v-alert
+              type="info"
+              color="blue lighten-4"
+              border="left"
+              icon="mdi-information"
+            >
+              Você já possui um plano selecionado, para altera-lo, entre em contato com o suporte e solicite.
+            </v-alert>
           </v-col>
         </v-row>
 
@@ -187,6 +198,13 @@ export default {
       },
       whatsappLink:
         "https://wa.me/5516982037314?text=Olá!%20Gostaria%20de%20alterar%20meu%20plano.",
+      planos: [
+        { id: "1", nome: "BÁSICO", descricao: "1 PROFISSIONAL." },
+        { id: "2", nome: "PROFISSIONAL", descricao: "2 a 5 PROFISSIONAIS." },
+        { id: "3", nome: "PREMIUM", descricao: "6 a 15 PROFISSIONAIS." },
+        { id: "4", nome: "MASTER", descricao: "MAIS DE 15 PROFISSIONAIS." },
+      ],
+      planoBloqueado: false,
     };
   },
   computed: {
@@ -215,12 +233,42 @@ export default {
   methods: {
     async salvarEmpresa() {
       if (
+        this.form.razao_social === "" ||
+        this.form.razao_social === undefined
+      ) {
+        this.$store.dispatch("toast/showToast", {
+          message: `Razão Social deve ser preenchido`,
+          color: "warning",
+        });
+        return;
+      }
+
+      if (this.form.cnpj === "" || this.form.cnpj === undefined) {
+        this.$store.dispatch("toast/showToast", {
+          message: `CNPJ/CPF deve ser preenchido`,
+          color: "warning",
+        });
+        return;
+      }
+
+      if (
         this.form.celular === "" ||
         String(this.formataCelular(this.form.celular)).length < 11
       ) {
         this.$store.dispatch("toast/showToast", {
           message: `Celular inválido`,
           color: "warning",
+        });
+        return;
+      }
+
+      if (
+        this.form.plano_recurso === "" ||
+        this.form.plano_recurso === undefined
+      ) {
+        this.$store.dispatch("toast/showToast", {
+          message: `Plano deve ser escolhido, em caso de dúvidas, entre em contato com nosso suporte`,
+          color: "info",
         });
         return;
       }
@@ -256,11 +304,11 @@ export default {
 
         //this.$router.push("/app/empresa");
 
-        setTimeout(() => {
+        /*setTimeout(() => {
           this.$router.push("/app/empresa").then(() => {
             window.location.reload();
           });
-        }, 1000);
+        }, 1000);*/
       } catch (error) {
         console.error("Erro ao salvar empresa: ", error);
         this.$store.dispatch("toast/showToast", {
@@ -294,6 +342,7 @@ export default {
             this.form.hash = empresa?.hash;
             this.form.celular = empresa.agenda_user?.celular;
             this.form.plano_recurso = empresa.plano_recurso;
+            this.planoBloqueado = !!empresa.plano_recurso;
             this.form.expiration = empresa.expiration;
             if (empresa.status === "A") {
               this.form.status = true;
@@ -314,6 +363,7 @@ export default {
       }
     },
     formataCelular(celular) {
+      if (!celular) return;
       return celular
         .replace(" ", "")
         .replace("-", "")
@@ -351,6 +401,12 @@ export default {
           });
       }
     },
+    selecionarPlano(id) {
+      if (this.planoBloqueado) {
+        return;
+      }
+      this.form.plano_recurso = id;
+    },
   },
 };
 </script>
@@ -360,7 +416,13 @@ import { vMaska } from "maska/vue";
 </script>
 <style>
 .selected-plan {
-  border: 2px solid #1976d2; /* Azul do Vuetify */
+  border: 2px solid #1583d4;
   background-color: #e3f2fd;
+  transition: 0.3s;
+}
+
+.plano-disabled {
+  pointer-events: none;
+  opacity: 0.6;
 }
 </style>

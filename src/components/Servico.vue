@@ -386,8 +386,8 @@ export default {
         agenda_empresa_recursos: this.selectedRecurso.id,
         agenda_empresa_servicos: this.listaServicos,
         agenda_user: {
-          id: this.empresa.agenda_user.id,
-          email: this.empresa.agenda_user.email,
+          id: this.empresa.agenda_user?.id,
+          email: this.empresa.agenda_user?.email,
         },
       };
       this.$store

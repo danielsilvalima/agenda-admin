@@ -252,8 +252,8 @@ export default {
       formData.append(
         "agenda_user",
         JSON.stringify({
-          id: this.empresa.agenda_user.id,
-          email: this.empresa.agenda_user.email,
+          id: this.empresa.agenda_user?.id,
+          email: this.empresa.agenda_user?.email,
         })
       );
 
