@@ -149,9 +149,9 @@
 
         <!-- Mensagem de suporte -->
         <v-alert type="info" class="mt-4">
-          PARA ALTERAR O PLANO,
+          Para falar com o suporte,
           <a :href="whatsappLink" target="_blank" class="text-white"
-            >CLIQUE AQUI E FALE COM O SUPORTE VIA WHATSAPP.</a
+            >clique aqui </a
           >
         </v-alert>
       </v-row>
