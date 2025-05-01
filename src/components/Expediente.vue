@@ -279,40 +279,45 @@ export default {
   },
   methods: {
     async carregarExpediente(recurso) {
-      if (this.empresa?.id) {
-        this.$store.dispatch("loading/showLoading");
+      if (!this.empresa?.id) {
+        this.$store.dispatch("toast/showToast", {
+          message: `É necessário cadastrar a empresa`,
+          color: "warning",
+        });
+        return;
+      }
+      this.$store.dispatch("loading/showLoading");
 
-        const credencial = localStorage.getItem("googleUserCredential");
-        if (credencial) {
-          try {
-            const empresa = await this.$store.dispatch(
-              "expediente/buscarExpediente",
-              { id: this.empresa.id, empresa_recurso_id: recurso.id }
+      const credencial = localStorage.getItem("googleUserCredential");
+      if (credencial) {
+        try {
+          const empresa = await this.$store.dispatch(
+            "expediente/buscarExpediente",
+            { id: this.empresa.id, empresa_recurso_id: recurso.id }
+          );
+
+          if (empresa && Object.keys(empresa).length > 0) {
+            this.listaExpedientes = empresa.agenda_empresa_expedientes?.map(
+              (item) => ({
+                id: item.id,
+                horario_expediente_id: item.horario_expediente_id,
+                hora_abertura: item.hora_abertura,
+                hora_fechamento: item.hora_fechamento,
+                intervalo_inicio: item.intervalo_inicio,
+                intervalo_fim: item.intervalo_fim,
+                empresa_recurso_id: item.empresa_recurso_id,
+                agenda_empresa_recursos: item.agenda_empresa_recursos,
+              })
             );
-
-            if (empresa && Object.keys(empresa).length > 0) {
-              this.listaExpedientes = empresa.agenda_empresa_expedientes?.map(
-                (item) => ({
-                  id: item.id,
-                  horario_expediente_id: item.horario_expediente_id,
-                  hora_abertura: item.hora_abertura,
-                  hora_fechamento: item.hora_fechamento,
-                  intervalo_inicio: item.intervalo_inicio,
-                  intervalo_fim: item.intervalo_fim,
-                  empresa_recurso_id: item.empresa_recurso_id,
-                  agenda_empresa_recursos: item.agenda_empresa_recursos,
-                })
-              );
-            }
-          } catch (error) {
-            console.error("Erro ao carregar empresa: ", error);
-            this.$store.dispatch("toast/showToast", {
-              message: `Erro ao carregar empresa: ${error}`,
-              color: "error",
-            });
-          } finally {
-            this.$store.dispatch("loading/hideLoading");
           }
+        } catch (error) {
+          console.error("Erro ao carregar empresa: ", error);
+          this.$store.dispatch("toast/showToast", {
+            message: `Erro ao carregar empresa: ${error}`,
+            color: "error",
+          });
+        } finally {
+          this.$store.dispatch("loading/hideLoading");
         }
       }
     },

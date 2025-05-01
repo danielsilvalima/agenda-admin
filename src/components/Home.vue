@@ -274,27 +274,31 @@ export default {
       const credencial = localStorage.getItem("googleUserCredential");
       if (credencial) {
         try {
-          if (this.empresa) {
-            console.log("teste");
-            console.log(this.empresa);
-            const empresa = await this.$store.dispatch(
-              "recurso/buscarRecurso",
-              this.empresa.id
+          if (!this.empresa?.id) {
+            this.$store.dispatch("toast/showToast", {
+              message: `É necessário cadastrar a empresa`,
+              color: "warning",
+            });
+            return;
+          }
+
+          const empresa = await this.$store.dispatch(
+            "recurso/buscarRecurso",
+            this.empresa.id
+          );
+
+          if (empresa && Object.keys(empresa).length > 0) {
+            this.recursoOptions = empresa.agenda_empresa_recursos.map(
+              (recurso) => ({
+                title: recurso.descricao,
+                value: recurso.id,
+              })
             );
 
-            if (empresa && Object.keys(empresa).length > 0) {
-              this.recursoOptions = empresa.agenda_empresa_recursos.map(
-                (recurso) => ({
-                  title: recurso.descricao,
-                  value: recurso.id,
-                })
-              );
-
-              // Preenche os selecionados com todos os IDs retornados
-              this.recursosSelecionados = empresa.agenda_empresa_recursos.map(
-                (recurso) => recurso.id
-              );
-            }
+            // Preenche os selecionados com todos os IDs retornados
+            this.recursosSelecionados = empresa.agenda_empresa_recursos.map(
+              (recurso) => recurso.id
+            );
           }
         } catch (error) {
           console.error(

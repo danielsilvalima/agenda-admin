@@ -167,37 +167,42 @@ export default {
   },
   methods: {
     async carregarRecurso() {
-      if (this.empresa?.id) {
-        this.$store.dispatch("loading/showLoading");
-        const credencial = localStorage.getItem("googleUserCredential");
-        if (credencial) {
-          try {
-            const empresa = await this.$store.dispatch(
-              "recurso/buscarRecurso",
-              this.empresa.id
-            );
+      if (!this.empresa?.id) {
+        this.$store.dispatch("toast/showToast", {
+          message: `É necessário cadastrar a empresa`,
+          color: "warning",
+        });
+        return;
+      }
+      this.$store.dispatch("loading/showLoading");
+      const credencial = localStorage.getItem("googleUserCredential");
+      if (credencial) {
+        try {
+          const empresa = await this.$store.dispatch(
+            "recurso/buscarRecurso",
+            this.empresa.id
+          );
 
-            if (empresa && Object.keys(empresa).length > 0) {
-              this.listaRecursos = empresa.agenda_empresa_recursos?.map(
-                (item) => ({
-                  id: item.id,
-                  descricao: item.descricao,
-                  path: item.path,
-                })
-              );
-            }
-          } catch (error) {
-            console.error(
-              "ERRO AO CARREGAR EMPRESA: ",
-              error.response.data?.message
+          if (empresa && Object.keys(empresa).length > 0) {
+            this.listaRecursos = empresa.agenda_empresa_recursos?.map(
+              (item) => ({
+                id: item.id,
+                descricao: item.descricao,
+                path: item.path,
+              })
             );
-            this.$store.dispatch("toast/showToast", {
-              message: `Erro ao carregar empresa  ${error}`,
-              color: "error",
-            });
-          } finally {
-            this.$store.dispatch("loading/hideLoading");
           }
+        } catch (error) {
+          console.error(
+            "ERRO AO CARREGAR EMPRESA: ",
+            error.response.data?.message
+          );
+          this.$store.dispatch("toast/showToast", {
+            message: `Erro ao carregar empresa  ${error}`,
+            color: "error",
+          });
+        } finally {
+          this.$store.dispatch("loading/hideLoading");
         }
       }
     },
@@ -212,7 +217,7 @@ export default {
           (recurso) => recurso.descricao === this.resource.descricao
         );
         if (duplicado) {
-          this.alertTitle = "ESTE PROFISSIONAL JÁ FOI ADICIONADO";
+          this.alertTitle = "Este profissional já foi adicionado";
           this.snackbar = true;
           this.$store.dispatch("toast/showToast", {
             message: `Este profissional já foi adicionado`,
